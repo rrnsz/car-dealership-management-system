@@ -1,0 +1,316 @@
+/* ------------------------- */
+/* General Styles */
+/* ------------------------- */
+:root {
+    --primary-color: #40ACF1; /* Main blue color */
+    --secondary-color: #292F36; /* Dark gray for text */
+    --background-color: #F5F7FA; /* Light gray background */
+    --white: #FFFFFF; /* White */
+    --success-color: #28a745; /* Green for success actions */
+    --warning-color: #ffc107; /* Yellow for warnings */
+    --danger-color: #dc3545; /* Red for danger actions */
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+  
+  body {
+    font-family: 'Roboto', sans-serif;
+    color: var(--secondary-color);
+    background: var(--background-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+  }
+  
+  /* ------------------------- */
+  /* Dashboard Container */
+  /* ------------------------- */
+  .dashboard-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  
+  .dashboard-box {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .dashboard-box h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .dashboard-box h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+  }
+  
+  /* ------------------------- */
+  /* Buttons */
+  /* ------------------------- */
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-block {
+    width: 100%;
+    max-width: 300px;
+    margin: 0.5rem auto;
+  }
+  
+  .btn-primary {
+    background: var(--primary-color);
+    color: var(--white);
+  }
+  
+  .btn-primary:hover {
+    background: #2e8bc0;
+    transform: translateY(-2px);
+  }
+  
+  .btn-success {
+    background: var(--success-color);
+    color: var(--white);
+  }
+  
+  .btn-success:hover {
+    background: #218838;
+    transform: translateY(-2px);
+  }
+  
+  .btn-danger {
+    background: var(--danger-color);
+    color: var(--white);
+  }
+  
+  .btn-danger:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+  }
+  
+  .btn-secondary {
+    background: var(--secondary-color);
+    color: var(--white);
+  }
+  
+  .btn-secondary:hover {
+    background: #1a1f24;
+    transform: translateY(-2px);
+  }
+  
+  .btn-warning {
+    background: var(--warning-color);
+    color: var(--secondary-color);
+  }
+  
+  .btn-warning:hover {
+    background: #e0a800;
+    transform: translateY(-2px);
+  }
+
+  .text-center {
+    text-align: center;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Center the "Add New Driver" and "Add New Staff" buttons */
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+  
+  /* ------------------------- */
+  /* Tables */
+  /* ------------------------- */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: var(--white);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.table th,
+.table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--background-color);
+}
+
+.table th {
+    background: var(--primary-color);
+    color: var(--white);
+    font-weight: 600;
+}
+
+.table tbody tr:hover {
+    background: rgba(64, 172, 241, 0.1);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Action Buttons */
+.table .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    margin: 0 0.25rem;
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .table th,
+    .table td {
+        padding: 0.75rem;
+    }
+
+    .table .btn {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+  
+  /* ------------------------- */
+  /* Alerts */
+  /* ------------------------- */
+  .alert {
+    padding: 0.75rem 1.25rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+  }
+  
+  .alert-info {
+    background: #e9f5ff;
+    color: #004085;
+    border: 1px solid #b8daff;
+  }
+  
+  .alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+  
+  /* ------------------------- */
+  /* Modals */
+  /* ------------------------- */
+  .modal-content {
+    border-radius: 10px;
+    border: none;
+    box-shadow: var(--shadow);
+  }
+  
+  .modal-header {
+    background: var(--primary-color);
+    color: var(--white);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 1rem;
+  }
+  
+  .modal-header .close {
+    color: var(--white);
+    opacity: 0.8;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .modal-header .close:hover {
+    opacity: 1;
+  }
+  
+  .modal-body {
+    padding: 1.5rem;
+  }
+  
+  .modal-footer {
+    border-top: 1px solid var(--background-color);
+    padding: 1rem;
+    text-align: right;
+  }
+  
+  /* ------------------------- */
+  /* Forms */
+  /* ------------------------- */
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--background-color);
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .form-control:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(64, 172, 241, 0.25);
+  }
+  
+  /* ------------------------- */
+  /* Responsive Design */
+  /* ------------------------- */
+  @media (max-width: 768px) {
+    .dashboard-box {
+      padding: 1rem;
+    }
+  
+    .btn-block {
+      max-width: 100%;
+    }
+  
+    .table th,
+    .table td {
+      padding: 0.5rem;
+      text-align: center;
+    }
+
+    .table .btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem; /* Adds spacing between buttons */
+    }
+    
+  }

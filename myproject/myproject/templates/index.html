@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- bootstrap css -->
+   
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <!-- main css -->
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <!-- google fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Add animate.css for smooth animations -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+  <title>Luxury Auto Gallery</title>
+  <style>
+    :root {
+      --primary: #1a1a1a;
+      --accent: #ff4d4d;
+      --light: #ffffff;
+      --gray: #f5f5f5;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light);
+    }
+
+    /* Modern Minimal Navbar */
+    .navbar {
+      padding: 1.5rem 2rem;
+      background: transparent;
+      position: absolute;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .navbar.scrolled {
+      background: var(--light);
+      position: fixed;
+      animation: slideDown 0.5s ease;
+    }
+
+    .nav-link {
+      font-weight: 500;
+      margin: 0 1rem;
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Hero Section Redesign */
+    .header {
+      height: 100vh;
+      background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                  url('{% static "img/Bugatti.jpeg" %}') center/cover;
+      display: flex;
+      align-items: center;
+      color: var(--light);
+    }
+
+    .header-content {
+      max-width: 800px;
+      margin-left: 10%;
+    }
+
+    .header-subtitle {
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+
+    .header-title {
+      font-size: 4.5rem;
+      font-weight: 700;
+      margin: 1rem 0;
+    }
+
+    .header-price {
+      font-size: 2rem;
+      margin: 2rem 0;
+    }
+
+    .btn-explore {
+      background: var(--accent);
+      color: var(--light);
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: transform 0.3s ease;
+    }
+
+    .btn-explore:hover {
+      transform: translateY(-3px);
+    }
+
+    /* Inventory Grid Redesign */
+    .inventory {
+      background: var(--gray);
+      padding: 8rem 0;
+    }
+
+    .filter-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 4rem;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: none;
+      padding: 0.8rem 2rem;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .filter-btn::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+
+    .filter-btn:hover::after,
+    .filter-btn.active::after {
+      width: 100%;
+    }
+
+    .car-card {
+      background: var(--light);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .car-img-wrapper {
+      position: relative;
+      padding-top: 66.67%;
+      overflow: hidden;
+    }
+
+    .car-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .car-card:hover .car-img {
+      transform: scale(1.1);
+    }
+
+    .car-details {
+      padding: 2rem;
+    }
+
+    .car-make {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .car-model {
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .car-specs {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+    }
+
+    .car-spec {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Features Section */
+    .features {
+      padding: 8rem 0;
+      background: var(--primary);
+      color: var(--light);
+    }
+
+    .feature-card {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+
+    /* Featured Section Styles */
+    .featured {
+      background: #f8f9fa;
+      padding: 100px 0;
+    }
+
+    .text-accent {
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 3rem;
+    }
+
+    .featured-car-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .featured-car-card:hover {
+      transform: translateY(-10px);
+    }
+
+    .featured-car-header {
+      position: relative;
+      height: 300px;
+      overflow: hidden;
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      z-index: 1;
+    }
+
+    .featured-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .featured-car-card:hover .featured-img {
+      transform: scale(1.1);
+    }
+
+    .featured-car-content {
+      padding: 2rem;
+    }
+
+    .featured-car-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .featured-car-title h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .featured-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .featured-car-specs {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding: 1rem 0;
+      border-top: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+    }
+
+    .spec-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .spec-item i {
+      color: var(--accent);
+    }
+
+    .btn-view-details {
+      display: inline-block;
+      padding: 12px 30px;
+      background: var(--primary);
+      color: white;
+      text-decoration: none;
+      border-radius: 30px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-view-details:hover {
+      background: var(--accent);
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .featured-highlight {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      height: 100%;
+    }
+
+    .highlight-icon {
+      width: 50px;
+      height: 50px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .highlight-content h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .highlight-content p {
+      margin: 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .featured-section {
+      background: #1a1a1a;
+      color: white;
+      overflow: hidden;
+    }
+
+    .featured-header {
+      padding: 4rem 0;
+    }
+
+    .text-accent {
+      color: var(--accent);
+      font-weight: 500;
+      letter-spacing: 3px;
+    }
+
+    .section-title {
+      font-size: 3rem;
+      font-weight: 700;
+      margin: 1rem 0;
+    }
+
+    .featured-main {
+      position: relative;
+      height: 100%;
+    }
+
+    .featured-image {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .featured-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .featured-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 3rem;
+      background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+      transition: transform 0.3s ease;
+    }
+
+    .featured-main:hover .featured-overlay {
+      transform: translateY(-10px);
+    }
+
+    .car-category {
+      display: inline-block;
+      background: var(--accent);
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .featured-content h3 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .car-highlights {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .car-highlights span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-discover {
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 30px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn-discover:hover {
+      background: white;
+      color: black;
+    }
+
+    .featured-grid {
+      height: 100%;
+    }
+
+    .grid-item {
+      position: relative;
+      height: 300px;
+      overflow: hidden;
+    }
+
+    .grid-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .grid-item:hover img {
+      transform: scale(1.1);
+    }
+
+    .grid-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.5rem;
+      background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .grid-item:hover .grid-overlay {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .grid-overlay h4 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+
+    .grid-overlay p {
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .price {
+      display: inline-block;
+      background: var(--accent);
+      padding: 0.3rem 1rem;
+      border-radius: 15px;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Why Choose Us Section */
+    .why-choose-us {
+      background: var(--light);
+      padding: 100px 0;
+    }
+
+    .feature-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 100%;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+
+    .feature-icon {
+      width: 70px;
+      height: 70px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-icon i {
+      font-size: 2rem;
+      color: white;
+    }
+
+    .feature-content h4 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .feature-content p {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .stats-row {
+      border-top: 1px solid #eee;
+    }
+
+    .stat-card {
+      padding: 2rem;
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 1.1rem;
+      color: #666;
+    }
+
+    .text-accent {
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 2px;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-top: 0.5rem;
+    }
+
+    .cta-section {
+      background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), 
+                  url('{% static "img/Bugatti.jpeg" %}') center/cover;
+      padding: 100px 0;
+      color: white;
+    }
+
+    .cta-wrapper {
+      padding: 3rem;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+    }
+
+    .cta-content {
+      padding-right: 3rem;
+    }
+
+    .cta-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-text {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn-primary, .btn-secondary {
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+
+    .btn-primary:hover, .btn-secondary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .cta-benefits {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .benefit-item i {
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+
+    @media (max-width: 991px) {
+      .cta-content {
+        padding-right: 0;
+        margin-bottom: 3rem;
+        text-align: center;
+      }
+
+      .cta-buttons {
+        justify-content: center;
+      }
+
+      .cta-benefits {
+        align-items: center;
+      }
+    }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .contact-btn, .collection-btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .contact-btn {
+      background: #ff4d4d;
+      color: white;
+      border: none;
+    }
+
+    .collection-btn {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+
+    .contact-btn:hover {
+      background: #ff3333;
+      transform: translateY(-2px);
+    }
+
+    .collection-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+
+<body>
+<!-- preloader 
+<div class="preloader d-flex justify-content-center align-items-center">
+  <img src="{% static 'img/preloader.gif" alt="preloader">
+</div>-->
+<!-- end of preloader -->
+
+<!-- nav section -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <img src="{% static 'img/gearLogo.png'%}" alt="logo" height="40">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#header">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#inventory">Vehicles</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#features" onclick="scrollToSpotlight(event)">Features</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+        </li>
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="#">{{ full_name }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- end of nav section -->
+
+<!-- header -->
+<header class="header" id="header">
+  <div class="header-content">
+    <p class="header-subtitle animate__animated animate__fadeIn">Ultimate Performance</p>
+    <h1 class="header-title animate__animated animate__fadeIn animate__delay-1s">
+      2024 Bugatti Chiron
+    </h1>
+    <p class="header-price animate__animated animate__fadeIn animate__delay-2s">
+      Starting at $3,825,000
+    </p>
+    <a href="#inventory" class="btn btn-explore animate__animated animate__fadeIn animate__delay-3s">
+      Explore Models
+    </a>
+  </div>
+</header>
+<!-- end of header section -->
+
+<!-- Why Choose Us Section -->
+<section class="why-choose-us py-5">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h6 class="text-accent animate__animated animate__fadeIn">EXCELLENCE IN EVERY DETAIL</h6>
+        <h2 class="section-title animate__animated animate__fadeIn">Why Choose Us</h2>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Feature 1 -->
+      <div class="col-lg-3 col-md-6">
+        <div class="feature-card animate__animated animate__fadeInUp">
+          <div class="feature-icon">
+            <i class="fas fa-award"></i>
+          </div>
+          <div class="feature-content">
+            <h4>Premium Selection</h4>
+            <p>Curated collection of luxury and exotic vehicles from the world's finest manufacturers.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="col-lg-3 col-md-6">
+        <div class="feature-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+          <div class="feature-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="feature-content">
+            <h4>Verified Quality</h4>
+            <p>Rigorous inspection and certification process for every vehicle in our inventory.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="col-lg-3 col-md-6">
+        <div class="feature-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+          <div class="feature-icon">
+            <i class="fas fa-concierge-bell"></i>
+          </div>
+          <div class="feature-content">
+            <h4>Concierge Service</h4>
+            <p>Personalized assistance and white-glove delivery service for our distinguished clients.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="col-lg-3 col-md-6">
+        <div class="feature-card animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">
+          <div class="feature-icon">
+            <i class="fas fa-handshake"></i>
+          </div>
+          <div class="feature-content">
+            <h4>Expert Support</h4>
+            <p>Dedicated team of automotive specialists to assist you throughout your journey.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row mt-5 pt-5 stats-row">
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-card text-center animate__animated animate__fadeIn">
+          <div class="stat-number" data-value="500">0</div>
+          <div class="stat-label">Luxury Vehicles</div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-card text-center animate__animated animate__fadeIn">
+          <div class="stat-number" data-value="1000">0</div>
+          <div class="stat-label">Happy Clients</div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-card text-center animate__animated animate__fadeIn">
+          <div class="stat-number" data-value="50">0</div>
+          <div class="stat-label">Global Locations</div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-card text-center animate__animated animate__fadeIn">
+          <div class="stat-number" data-value="15">0</div>
+          <div class="stat-label">Years Experience</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- inventory section -->
+<section class="inventory py-5" id="inventory">
+  <div class="container">
+    <!-- section title -->
+    <div class="row mb-5">
+        <div class="col d-flex flex-wrap text-uppercase justify-content-center">
+          <h1 class="font-weight-bold align-self-center mx-1">our</h1>
+          <h1 class="section-title--special mx-1">inventory</h1>
+        </div>
+      </div>
+    <!-- end of section title -->
+  
+    <!-- buttons row -->
+    <div class="row mb-5">
+  <div class="col-10 mx-auto col-md-12 d-flex justify-content-end">
+    <button onclick="filterCars('all')" class="btn btn-outline-secondary text-uppercase mx-1 {% if not category or category == 'all' %}active{% endif %}">All</button>
+    <button onclick="filterCars('american')" class="btn btn-outline-secondary text-uppercase mx-1 {% if category == 'american' %}active{% endif %}">American</button>
+    <button onclick="filterCars('german')" class="btn btn-outline-secondary text-uppercase mx-1 {% if category == 'german' %}active{% endif %}">German</button>
+    <button onclick="filterCars('japanese')" class="btn btn-outline-secondary text-uppercase mx-1 {% if category == 'japanese' %}active{% endif %}">Japanese</button>
+    <button onclick="filterCars('italian')" class="btn btn-outline-secondary text-uppercase mx-1 {% if category == 'italian' %}active{% endif %}">Italian</button>
+  </div>
+</div>
+<!-- end of button row -->
+
+<!-- cars -->
+<div class="row inventory-container">
+  {% for car in cars %}
+    {% if car.stock > 0 %}
+    <div class="col-10 mx-auto my-3 col-md-6 col-lg-4 single-car {{ car.category }}">
+      <div class="card car-card">
+        <div class="car-img-wrapper">
+          <img src="{{ car.image.url }}" class="card-img-top car-img" alt="{{ car.make }} {{ car.model }}">
+        </div>
+        <div class="card-body">
+          <div class="car-info d-flex justify-content-between">
+            <div class="car-text text-uppercase">
+              <h6 class="font-weight-bold">{{ car.make }}</h6>
+              <h6>{{ car.model }}</h6>
+            </div>
+            <h5 class="car-value align-self-center py-2 px-3">
+              $<span class="car-price">{{ car.price }}</span>
+            </h5>
+          </div>
+        </div>
+        <div class="card-footer text-capitalize d-flex justify-content-between">
+          <p><span><i class="fas fa-car"></i></span>{{ car.type }}</p>
+          <p><span><i class="fas fa-cogs"></i></span>{{ car.transmission }}</p>
+          <p><span><i class="fas fa-gas-pump"></i></span>{{ car.gas }}</p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  {% endfor %}
+</div>
+</section>
+<!-- end of inventory section -->
+
+<!-- question section -->
+<div class="section question py-5" id="question">
+  <div class="container">
+    <div class="row">
+      <!-- single question first -->
+      <div class="col-10 mx-auto my-2 col-md-6 d-flex justify-content-between question-grey p-4">
+        <!-- first flexbox child -->
+        <a href="#" class="question-icon mr-3">
+          <i class="fas fa-search fa-fw"></i>
+        </a>
+        <!-- second flexbox child -->
+        <div class="question-text w-75">
+          <h4 class="question-title text-capitalize font-weight-bold">are you looking for a car?</h4>
+          <p class="question-info">Find Your Dream Car Today! Explore our wide range of vehicles and drive home in style.</p>
+        </div>
+      </div>
+      <!-- single question second -->
+      <div class="col-10 mx-auto my-2 col-md-6 d-flex justify-content-between question-yellow p-4">
+        <!-- first flexbox child -->
+        <a href="#" class="question-icon mr-3">
+          <i class="fas fa-dollar-sign fa-fw"></i>
+        </a>
+        <!-- second flexbox child -->
+        <div class="question-text w-75">
+          <h4 class="question-title text-capitalize font-weight-bold">do you want to sell a car?</h4>
+          <p class="question-info">Turn Your Car into Cash! Contact us to get the best value for your vehicle. </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end of question section -->
+
+<!-- Featured Section -->
+<section class="featured-section" id="featured">
+  <div class="container-fluid px-0">
+    <!-- Featured Header -->
+    <div class="featured-header text-center py-5">
+      <h6 class="text-accent animate__animated animate__fadeIn">DISCOVER EXCELLENCE</h6>
+      <h2 class="section-title animate__animated animate__fadeIn">This Month's Spotlight</h2>
+    </div>
+
+    <!-- Featured Gallery -->
+    <div class="featured-gallery">
+      <div class="row g-0">
+        <!-- Main Featured Car -->
+        <div class="col-lg-6">
+          <div class="featured-main">
+            <div class="featured-image">
+              <img src="{% static 'img/BMW_12.jpeg' %}" alt="BMW Featured Car">
+              <div class="featured-overlay">
+                <div class="featured-content">
+                  <span class="car-category">LUXURY SEDAN</span>
+                  <h3>2023 BMW M5 Competition</h3>
+                  <div class="car-highlights">
+                    <span><i class="fas fa-bolt"></i> 617 HP</span>
+                    <span><i class="fas fa-tachometer-alt"></i> 2.8s 0-60</span>
+                    <span><i class="fas fa-coin"></i> $103,500</span>
+                  </div>
+                  <button class="btn-discover" onclick="showCarDetails('bmw-m5')">
+                    Discover More
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured Grid -->
+        <div class="col-lg-6">
+          <div class="featured-grid">
+            <div class="row g-0">
+              <!-- Grid Item 1 -->
+              <div class="col-md-6">
+                <div class="grid-item">
+                  <img src="{% static 'img/porsche-911-gt3.jpg' %}" alt="Luxury Car">
+                  <div class="grid-overlay">
+                    <h4>Porsche 911 GT3</h4>
+                    <p>Track-Ready Performance</p>
+                    <span class="price">$161,100</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Grid Item 2 -->
+              <div class="col-md-6">
+                <div class="grid-item">
+                  <img src="{% static 'img/gtr_12.jpeg' %}" alt="AMG Car">
+                  <div class="grid-overlay">
+                    <h4>Mercedes-AMG GT</h4>
+                    <p>Pure Luxury Performance</p>
+                    <span class="price">$158,000</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Grid Item 3 -->
+              <div class="col-md-6">
+                <div class="grid-item">
+                  <img src="{% static 'img/Bugatti.jpeg' %}" alt="Bugatti Chiron">
+                  <div class="grid-overlay">
+                    <h4>Bugatti Chiron</h4>
+                    <p>Ultimate Hypercar</p>
+                    <span class="price">$3,825,000</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Grid Item 4 -->
+              <div class="col-md-6">
+                <div class="grid-item">
+                  <img src="{% static 'img/Lamborghini Huracán.jpeg' %}" alt="Lamborghini Huracán">
+                  <div class="grid-overlay">
+                    <h4>Lamborghini Huracán</h4>
+                    <p>Exotic Supercar</p>
+                    <span class="price">$206,295</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- End Section - Call to Action -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-wrapper">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <div class="cta-content">
+            <h6 class="text-accent animate__animated animate__fadeIn">JOIN OUR EXCLUSIVE CLUB</h6>
+            <h2 class="cta-title animate__animated animate__fadeIn">Experience Luxury Like Never Before</h2>
+            <p class="cta-text animate__animated animate__fadeIn">
+              Get priority access to our newest arrivals, exclusive events, and VIP services.
+            </p>
+            <div class="cta-buttons animate__animated animate__fadeIn">
+              <a href="{% url 'contact' %}" class="btn-primary">Contact Us</a>
+              <a href="#inventory" class="btn-secondary">View Collection</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="cta-benefits">
+            <div class="benefit-item animate__animated animate__fadeInRight">
+              <i class="fas fa-check-circle"></i>
+              <span>24/7 Concierge Service</span>
+            </div>
+            <div class="benefit-item animate__animated animate__fadeInRight" style="animation-delay: 0.2s;">
+              <i class="fas fa-check-circle"></i>
+              <span>Priority Vehicle Reservations</span>
+            </div>
+            <div class="benefit-item animate__animated animate__fadeInRight" style="animation-delay: 0.4s;">
+              <i class="fas fa-check-circle"></i>
+              <span>Exclusive Member Events</span>
+            </div>
+            <div class="benefit-item animate__animated animate__fadeInRight" style="animation-delay: 0.6s;">
+              <i class="fas fa-check-circle"></i>
+              <span>Personalized Experience</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- footer -->
+<footer class="footer py-5">
+  <div class="footer-icons d-flex justify-content-around">
+    <a href="#link" class="footer-icon">
+      <i class="fab fa-facebook"></i>
+    </a>
+    <a href="#" class="footer-icon">
+      <i class="fab fa-twitter"></i>
+    </a>
+    <a href="#" class="footer-icon">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a href="#" class="footer-icon">
+      <i class="fab fa-linkedin"></i>
+    </a>
+    <!-- <a href="#" class="footer-icon">
+      <i class="fab fa-google-plus"></i>
+    </a> -->
+  </div>
+</footer>
+
+<script>
+  // Add navbar background on scroll
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 50) {
+      document.querySelector('.navbar').classList.add('scrolled');
+    } else {
+      document.querySelector('.navbar').classList.remove('scrolled');
+    }
+  });
+
+  function filterCars(category) {
+    event.preventDefault();
+    // Update active button
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    history.pushState(null, '', `?category=${category}`);
+    fetch(`/filter-cars/?category=${category}`)
+      .then(response => response.text())
+      .then(data => {
+        document.querySelector('.inventory-container').innerHTML = data;
+      })
+      .catch(error => console.error('Error:', error));
+  }
+
+  // Animate stats numbers with improved performance
+  function animateStats() {
+    const stats = document.querySelectorAll('.stat-number');
+    stats.forEach(stat => {
+      const target = parseInt(stat.getAttribute('data-value'));
+      let current = 0;
+      const duration = 1000; // 1 second duration
+      const steps = 20; // More steps for smoother animation
+      const increment = target / steps;
+      const stepTime = duration / steps;
+
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          clearInterval(timer);
+          stat.textContent = target;
+        } else {
+          stat.textContent = Math.round(current);
+        }
+      }, stepTime);
+    });
+  }
+
+  // Trigger animation immediately when the section is loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    animateStats();
+  });
+
+  // Also trigger on scroll if needed
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateStats();
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  const statsSection = document.querySelector('.stats-row');
+  if (statsSection) {
+    observer.observe(statsSection);
+  }
+
+  function scrollToSpotlight(event) {
+    event.preventDefault();
+    document.getElementById('featured').scrollIntoView({
+      behavior: 'smooth'
+    });
+  }
+</script>
+
+<!-- Add FontAwesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Your category buttons and car grid HTML here -->
+
+<!-- Add this script at the bottom of your body tag -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const carsGrid = document.querySelector('.cars-grid');
+
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            this.classList.add('active');
+
+            const category = this.textContent;
+            
+            // Simple fetch request
+            fetch(`/inventory/?category=${category}`)
+                .then(response => response.text())
+                .then(data => {
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = data;
+                    const newCarsGrid = tempDiv.querySelector('.cars-grid');
+                    if (newCarsGrid) {
+                        carsGrid.innerHTML = newCarsGrid.innerHTML;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+});
+</script>
+</body>
+</html>

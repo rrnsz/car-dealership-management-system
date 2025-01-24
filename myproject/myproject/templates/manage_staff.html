@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Staff</title>
+  <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="dashboard-box">
+    <h1 class="mb-4">Manage Dealership Staff</h1>
+    <div class="button-container">
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary mb-3">Back to Dashboard</a>
+    <a href="{% url 'logout' %}" class="btn btn-danger mb-3">Logout</a>
+    </div>
+  </div>
+
+  <div class="container">
+    {% if messages %}
+      <div class="alert alert-danger">
+        {% for message in messages %}
+          {{ message }}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="dashboard-box">
+    <h2 class="mb-4  text-center">Staff List</h2>
+    <div class="button-container">
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addStaffModal">Add New Staff</button>
+  </div>
+    {% if staff_list %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone Number</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for staff in staff_list %}
+        <tr>
+          <td>{{ staff.full_name }}</td>
+          <td>{{ staff.user.email }}</td>
+          <td>{{ staff.phone_number }}</td>
+          <td>
+            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editStaffModal{{ staff.user.id }}">Edit</button>
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteStaffModal{{ staff.user.id }}">Delete</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+      No staff members found. Add a new staff member using the "Add New Staff" button above.
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Add Staff Modal -->
+  <div class="modal fade" id="addStaffModal" tabindex="-1" aria-labelledby="addStaffModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addStaffModalLabel">Add New Staff</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="post" action="{% url 'add_staff' %}">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="full_name">Full Name</label>
+              <input type="text" class="form-control" id="full_name" name="full_name" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="phone_number">Phone Number</label>
+              <input type="text" class="form-control" id="phone_number" name="phone_number" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit and Delete Staff Modals -->
+  {% for staff in staff_list %}
+  <!-- Edit Staff Modal -->
+  <div class="modal fade" id="editStaffModal{{ staff.user.id }}" tabindex="-1" aria-labelledby="editStaffModalLabel{{ staff.user.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editStaffModalLabel{{ staff.user.id }}">Edit Staff</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="post" action="{% url 'edit_staff' staff.user.id %}">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="full_name">Full Name</label>
+              <input type="text" class="form-control" id="full_name" name="full_name" value="{{ staff.full_name }}" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control" id="email" name="email" value="{{ staff.user.email }}" required>
+            </div>
+            <div class="form-group">
+              <label for="phone_number">Phone Number</label>
+              <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ staff.phone_number }}" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" name="password">
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Staff Modal -->
+  <div class="modal fade" id="deleteStaffModal{{ staff.user.id }}" tabindex="-1" aria-labelledby="deleteStaffModalLabel{{ staff.user.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteStaffModalLabel{{ staff.user.id }}">Delete Staff</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this staff member?</p>
+        </div>
+        <div class="modal-footer">
+          <form method="post" action="{% url 'delete_staff' staff.user.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+
+    setTimeout(function() {
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(alert => {
+        alert.style.display = 'none';
+      });
+    }, 3000);
+  </script>
+
+
+</body>
+</html>
