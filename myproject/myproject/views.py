@@ -302,3 +302,20 @@ def filter_cars(request):
 def contact(request):
     return render(request, 'contact.html')
 
+
+
+def car_detail_view(request, car_id):
+    car = get_object_or_404(Car, id=car_id)
+    context = {
+        'car': car
+    }
+    return render(request, 'car_detail.html', context)
+
+
+
+def submit_inquiry(request, car_id):
+    if request.method == 'POST':
+        # Here you can add code to handle the form submission
+        # For example, sending an email or saving to database
+        messages.success(request, 'Your inquiry has been sent successfully!')
+        return redirect('car_detail', car_id=car_id)

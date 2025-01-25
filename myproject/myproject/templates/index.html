@@ -748,6 +748,71 @@
       background: rgba(255, 255, 255, 0.1);
       transform: translateY(-2px);
     }
+
+    .car-card {
+      text-decoration: none;
+      color: inherit;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .car-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .car-image-container {
+      position: relative;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+    }
+
+    .car-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .car-price {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+
+    .car-info {
+      padding: 1rem;
+    }
+
+    .car-title {
+      margin: 0 0 1rem 0;
+      font-size: 1.25rem;
+      color: #1f2937;
+    }
+
+    .car-specs {
+      display: flex;
+      gap: 1rem;
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+
+    .car-specs i {
+      color: #3b82f6;
+    }
+
+    .cars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      padding: 2rem;
+    }
   </style>
 </head>
 
@@ -935,34 +1000,23 @@
 <!-- end of button row -->
 
 <!-- cars -->
-<div class="row inventory-container">
-  {% for car in cars %}
-    {% if car.stock > 0 %}
-    <div class="col-10 mx-auto my-3 col-md-6 col-lg-4 single-car {{ car.category }}">
-      <div class="card car-card">
-        <div class="car-img-wrapper">
-          <img src="{{ car.image.url }}" class="card-img-top car-img" alt="{{ car.make }} {{ car.model }}">
+<div class="cars-grid">
+    {% for car in cars %}
+    <a href="{% url 'car_detail' car.id %}" class="car-card">
+        <div class="car-image-container">
+            <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}" class="car-image">
+            <div class="car-price">${{ car.price }}</div>
         </div>
-        <div class="card-body">
-          <div class="car-info d-flex justify-content-between">
-            <div class="car-text text-uppercase">
-              <h6 class="font-weight-bold">{{ car.make }}</h6>
-              <h6>{{ car.model }}</h6>
+        <div class="car-info">
+            <h3 class="car-title">{{ car.make }} {{ car.model }}</h3>
+            <div class="car-specs">
+                <span><i class="fas fa-car"></i> {{ car.body_style }}</span>
+                <span><i class="fas fa-cog"></i> {{ car.transmission }}</span>
+                <span><i class="fas fa-gas-pump"></i> {{ car.fuel_grade }}</span>
             </div>
-            <h5 class="car-value align-self-center py-2 px-3">
-              $<span class="car-price">{{ car.price }}</span>
-            </h5>
-          </div>
         </div>
-        <div class="card-footer text-capitalize d-flex justify-content-between">
-          <p><span><i class="fas fa-car"></i></span>{{ car.type }}</p>
-          <p><span><i class="fas fa-cogs"></i></span>{{ car.transmission }}</p>
-          <p><span><i class="fas fa-gas-pump"></i></span>{{ car.gas }}</p>
-        </div>
-      </div>
-    </div>
-    {% endif %}
-  {% endfor %}
+    </a>
+    {% endfor %}
 </div>
 </section>
 <!-- end of inventory section -->
@@ -1175,7 +1229,7 @@
     fetch(`/filter-cars/?category=${category}`)
       .then(response => response.text())
       .then(data => {
-        document.querySelector('.inventory-container').innerHTML = data;
+        document.querySelector('.cars-grid').innerHTML = data;
       })
       .catch(error => console.error('Error:', error));
   }

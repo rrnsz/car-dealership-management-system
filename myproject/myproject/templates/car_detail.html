@@ -1,163 +1,431 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ car.make }} {{ car.model }} - Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --accent-color: #d4af37;
+            --text-light: #ffffff;
+            --text-dark: #1a1a1a;
+            --bg-gradient: linear-gradient(45deg, #1a1a1a, #2d2d2d);
+        }
 
-{% block content %}
-<div class="car-detail-container">
-    <div class="car-detail-grid">
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .navbar {
+            background: var(--bg-gradient);
+            padding: 1.5rem 0;
+        }
+
+        .car-detail-container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .car-image-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .car-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .car-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .car-title {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .price-tag {
+            font-size: 2rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .stock-status {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .in-stock {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .out-of-stock {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .spec-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+        }
+
+        .description-section {
+            line-height: 1.8;
+            color: #4b5563;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            padding: 1rem;
+            color: white;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-color);
+            color: var(--text-dark);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .car-info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .contact-form {
+            margin-top: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--accent-color);
+            color: var(--text-dark);
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-car-side me-2"></i>Luxury Motors
+            </a>
+        </div>
+    </nav>
+
+    <div class="car-detail-container">
         <!-- Car Image Section -->
         <div class="car-image-section">
-            <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}" class="main-image">
+            {% if car.image %}
+                <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}" class="car-image">
+            {% else %}
+                <div class="no-image">No image available</div>
+            {% endif %}
         </div>
 
-        <!-- Car Info Section -->
-        <div class="car-info-section">
-            <h1>{{ car.make }} {{ car.model }}</h1>
-            <div class="price-tag">${{ car.price }}</div>
+        <!-- Car Information Grid -->
+        <div class="car-info-grid">
+            <!-- Main Info Card -->
+            <div class="info-card">
+                <h1 class="car-title">{{ car.make }} {{ car.model }}</h1>
+                <div class="price-tag">${{ car.price }}</div>
+                
+                {% if car.stock > 0 %}
+                    <div class="stock-status in-stock">
+                        <i class="fas fa-check-circle me-2"></i>In Stock ({{ car.stock }} available)
+                    </div>
+                {% else %}
+                    <div class="stock-status out-of-stock">
+                        <i class="fas fa-times-circle me-2"></i>Out of Stock
+                    </div>
+                {% endif %}
 
-            <!-- Specifications -->
-            <div class="specs-grid">
-                <div class="spec-item">
-                    <i class="fas fa-car"></i>
-                    <span>Body Style: {{ car.body_style }}</span>
-                </div>
-                <div class="spec-item">
-                    <i class="fas fa-cog"></i>
-                    <span>Transmission: {{ car.transmission }}</span>
-                </div>
-                <div class="spec-item">
-                    <i class="fas fa-gas-pump"></i>
-                    <span>Fuel Grade: {{ car.fuel_grade }}</span>
-                </div>
-                <div class="spec-item">
-                    <i class="fas fa-tag"></i>
-                    <span>Category: {{ car.category }}</span>
+                <div class="description-section">
+                    <h3 class="mb-3">Description</h3>
+                    <p>{{ car.description|default:"No description available" }}</p>
                 </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button class="purchase-btn">Purchase Now</button>
-                <button class="test-drive-btn">Schedule Test Drive</button>
-            </div>
-
-            <!-- Contact Form -->
-            <div class="contact-section">
-                <h2>Interested? Contact Us</h2>
-                <form class="inquiry-form">
-                    <input type="text" placeholder="Your Name" required>
-                    <input type="email" placeholder="Your Email" required>
-                    <input type="tel" placeholder="Your Phone" required>
-                    <textarea placeholder="Message" required></textarea>
-                    <button type="submit">Send Inquiry</button>
-                </form>
+            <!-- Specifications Card -->
+            <div class="info-card">
+                <h3 class="mb-4">Specifications</h3>
+                <div class="specs-grid">
+                    <div class="spec-item">
+                        <div class="spec-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div>
+                            <small>Year</small>
+                            <div>{{ car.year }}</div>
+                        </div>
+                    </div>
+            
+                    <div class="spec-item">
+                        <div class="spec-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div>
+                            <small>Power</small>
+                            <div>{{ car.power }} HP</div>
+                        </div>
+                    </div>
+            
+                    <div class="spec-item">
+                        <div class="spec-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div>
+                            <small>Category</small>
+                            <div>{{ car.category }}</div>
+                        </div>
+                    </div>
+            
+                    <div class="spec-item">
+                        <div class="spec-icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div>
+                            <small>Type</small>
+                            <div>{{ car.type }}</div>
+                        </div>
+                    </div>
+            
+                    <div class="spec-item">
+                        <div class="spec-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div>
+                            <small>Transmission</small>
+                            <div>{{ car.transmission }}</div>
+                        </div>
+                    </div>
+            
+                    <div class="spec-item">
+                        <div class="spec-icon">
+                            <i class="fas fa-gas-pump"></i>
+                        </div>
+                        <div>
+                            <small>Gas Tank</small>
+                            <div>{{ car.gas }} L</div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Single Purchase Button -->
+                <div class="action-buttons" style="grid-template-columns: 1fr;">
+                    <button class="btn btn-primary" onclick="openContactModal()">
+                        <i class="fas fa-shopping-cart me-2"></i>Purchase Now
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<style>
-.car-detail-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 2rem;
-}
+    <!-- Add the Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeContactModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h2 class="mb-4">Contact Us About This Vehicle</h2>
+            <p class="mb-4">Interested in the {{ car.year }} {{ car.make }} {{ car.model }}? Fill out the form below and we'll get back to you shortly.</p>
+            
+            <form class="contact-form" method="POST" action="{% url 'submit_inquiry' car.id %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="4" required>I'm interested in the {{ car.year }} {{ car.make }} {{ car.model }} priced at ${{ car.price }}.</textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane me-2"></i>Send Inquiry
+                </button>
+            </form>
+        </div>
+    </div>
 
-.car-detail-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function openContactModal() {
+            document.getElementById('contactModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
 
-.car-image-section img {
-    width: 100%;
-    border-radius: 8px;
-}
+        function closeContactModal() {
+            document.getElementById('contactModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
 
-.car-info-section h1 {
-    margin: 0;
-    color: #1f2937;
-    font-size: 2rem;
-}
+        // Close modal when clicking outside
+        document.getElementById('contactModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeContactModal();
+            }
+        });
 
-.price-tag {
-    font-size: 2rem;
-    color: #3b82f6;
-    font-weight: bold;
-    margin: 1rem 0 2rem;
-}
-
-.specs-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.spec-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #4b5563;
-}
-
-.spec-item i {
-    color: #3b82f6;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.purchase-btn, .test-drive-btn {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 6px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.purchase-btn {
-    background: #3b82f6;
-    color: white;
-}
-
-.test-drive-btn {
-    background: #e5e7eb;
-    color: #1f2937;
-}
-
-.inquiry-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.inquiry-form input,
-.inquiry-form textarea {
-    padding: 0.75rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-}
-
-.inquiry-form button {
-    background: #3b82f6;
-    color: white;
-    padding: 0.75rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-@media (max-width: 768px) {
-    .car-detail-grid {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
-{% endblock %}
+        // Prevent modal close when clicking inside the modal content
+        document.querySelector('.modal-content').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    </script>
+</body>
+</html>

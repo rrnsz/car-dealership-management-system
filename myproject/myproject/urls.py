@@ -37,6 +37,8 @@ urlpatterns = [
     path('filter-cars/', views.filter_cars, name='filter_cars'),
     path('', views.index, name='index'),
     path('contact/', views.contact, name='contact'),
+    path('car/<int:car_id>/', views.car_detail_view, name='car_detail'),
+    path('submit-inquiry/<int:car_id>/', views.submit_inquiry, name='submit_inquiry'),
 
 ]
 
