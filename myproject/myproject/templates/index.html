@@ -813,6 +813,63 @@
       gap: 2rem;
       padding: 2rem;
     }
+
+    /* Add these more specific rules to your existing styles */
+    .car-link {
+        text-decoration: none !important;  /* Force remove underline */
+        color: inherit;
+        display: block;
+        transition: transform 0.3s ease;
+        outline: none !important;  /* Force remove outline */
+    }
+
+    .car-link:hover,
+    .car-link:focus,
+    .car-link:active,
+    .car-link:visited {
+        text-decoration: none !important;
+        outline: none !important;
+        color: inherit;
+    }
+
+    /* Remove blue line from the car name link */
+    .car-details h2 a,
+    .car-details h2 a:hover,
+    .car-details h2 a:focus,
+    .car-details h2 a:active,
+    .car-details h2 a:visited {
+        text-decoration: none !important;
+        color: inherit;
+        outline: none !important;
+    }
+
+    /* Rest of your existing styles */
+    .car-card {
+        border-radius: 15px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .car-card:hover {
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .car-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .car-link:hover .car-image {
+        transform: scale(1.05);
+    }
+
+    .car-details {
+        padding: 1.5rem;
+    }
   </style>
 </head>
 
@@ -1002,17 +1059,16 @@
 <!-- cars -->
 <div class="cars-grid">
     {% for car in cars %}
-    <a href="{% url 'car_detail' car.id %}" class="car-card">
-        <div class="car-image-container">
+    <a href="{% url 'car_detail' car.id %}" class="car-link">
+        <div class="car-card">
             <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}" class="car-image">
-            <div class="car-price">${{ car.price }}</div>
-        </div>
-        <div class="car-info">
-            <h3 class="car-title">{{ car.make }} {{ car.model }}</h3>
-            <div class="car-specs">
-                <span><i class="fas fa-car"></i> {{ car.body_style }}</span>
-                <span><i class="fas fa-cog"></i> {{ car.transmission }}</span>
-                <span><i class="fas fa-gas-pump"></i> {{ car.fuel_grade }}</span>
+            <div class="car-details">
+                <h3 class="car-title">{{ car.make }} {{ car.model }}</h3>
+                <div class="car-specs">
+                    <span><i class="fas fa-car"></i> {{ car.body_style }}</span>
+                    <span><i class="fas fa-cog"></i> {{ car.transmission }}</span>
+                    <span><i class="fas fa-gas-pump"></i> {{ car.fuel_grade }}</span>
+                </div>
             </div>
         </div>
     </a>

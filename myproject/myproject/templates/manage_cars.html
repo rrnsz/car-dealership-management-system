@@ -4,63 +4,331 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Staff Dashboard</title>
-  <link rel="stylesheet" href="{% static 'css/staff.css' %}">
+  <title>Manage Cars</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --accent-color: #3498db;
+      --success-color: #2ecc71;
+      --danger-color: #e74c3c;
+      --background-color: #f5f6fa;
+      --gold: #ffd700;
+    }
+
+    body {
+      background-color: var(--background-color);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+    }
+
+    .dashboard-box {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      padding: 2rem;
+      margin: 2rem auto;
+      max-width: 1400px;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, #2c3e50, #3498db);
+      padding: 2rem;
+      border-radius: 15px;
+      color: white;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn i {
+      font-size: 1.1rem;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), #daa520);
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+    }
+
+    .cars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .car-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .car-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .car-image {
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .car-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .car-card:hover .car-image img {
+      transform: scale(1.1);
+    }
+
+    .car-info {
+      padding: 1.5rem;
+    }
+
+    .car-info h3 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .car-details {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .price {
+      color: var(--accent-color);
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+
+    .car-specs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      padding: 1rem 0;
+      border-top: 1px solid #eee;
+    }
+
+    .spec-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background: #f8f9fa;
+    }
+
+    .edit-btn, .delete-btn {
+      flex: 1;
+      padding: 0.8rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .edit-btn {
+      background: var(--accent-color);
+      color: white;
+    }
+
+    .delete-btn {
+      background: var(--danger-color);
+      color: white;
+    }
+
+    .modal-content {
+      border-radius: 20px;
+      border: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      border-bottom: 1px solid #eee;
+      padding: 1.5rem;
+      border-radius: 20px 20px 0 0;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      border: 1px solid #ddd;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
+    .alert {
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin: 1rem 0;
+      border: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    @media (max-width: 768px) {
+      .page-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+
+      .button-container {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .cars-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .car-specs {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="dashboard-container">
-    <div class="dashboard-box">
-      <h1 class="mb-4">Welcome, Staff!</h1>
+  <div class="dashboard-box">
+    <div class="page-header">
+      <h1>
+        <i class="fas fa-car"></i>
+        Manage Cars
+      </h1>
       <div class="button-container">
-        <a href="{% url 'staff_dashboard' %}" class="btn btn-secondary mb-3">Back to Dashboard</a>
-        &nbsp;
-        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addCarModal">Add New Car</button>
+        <a href="{% url 'staff_dashboard' %}" class="btn btn-secondary">
+          <i class="fas fa-arrow-left"></i> Dashboard
+        </a>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCarModal">
+          <i class="fas fa-plus"></i> Add New Car
+        </button>
+        <a href="{% url 'logout' %}" class="btn btn-danger">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
       </div>
+    </div>
 
-      {% if messages %}
-        <div class="alert alert-danger">
-          {% for message in messages %}
-            {{ message }}
-          {% endfor %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} fade show">
+          <i class="fas fa-info-circle me-2"></i>
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="cars-grid">
+      {% if cars %}
+        {% for car in cars %}
+        <div class="car-card">
+          <div class="car-image">
+            {% if car.image %}
+              <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}">
+            {% else %}
+              <img src="{% static 'images/car-placeholder.jpg' %}" alt="Car placeholder">
+            {% endif %}
+          </div>
+          <div class="car-info">
+            <h3>{{ car.make }} {{ car.model }}</h3>
+            <div class="car-details">
+              <span class="price">${{ car.price|floatformat:2 }}</span>
+              <span class="year">{{ car.year }}</span>
+            </div>
+            <div class="car-specs">
+              <div class="spec-item">
+                <i class="fas fa-cog"></i>
+                {{ car.transmission }}
+              </div>
+              <div class="spec-item">
+                <i class="fas fa-gas-pump"></i>
+                {{ car.fuel_type }}
+              </div>
+              <div class="spec-item">
+                <i class="fas fa-tachometer-alt"></i>
+                {{ car.mileage }}km
+              </div>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <button class="edit-btn" data-bs-toggle="modal" data-bs-target="#editCarModal{{ car.id }}">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+            <button class="delete-btn" data-bs-toggle="modal" data-bs-target="#deleteCarModal{{ car.id }}">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="alert alert-info" role="alert">
+          <i class="fas fa-info-circle me-2"></i>
+          No cars available. Add your first car using the "Add New Car" button above.
         </div>
       {% endif %}
-
-      <h2 class="mb-4 text-center">Car List</h2>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Make</th>
-            <th>Model</th>
-            <th>Category</th>
-            <th>Stock</th>
-            <th>Price</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for car in cars %}
-          <tr>
-            <td>
-              {% if car.image %}
-                <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}" style="width: 100px;">
-              {% else %}
-                No Image
-              {% endif %}
-            </td>
-            <td>{{ car.make }}</td>
-            <td>{{ car.model }}</td>
-            <td>{{ car.get_category_display }}</td>
-            <td>{{ car.stock }}</td>
-            <td>${{ car.price }}</td>
-            <td>
-              <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editCarModal{{ car.id }}">Edit</button>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
     </div>
   </div>
 
