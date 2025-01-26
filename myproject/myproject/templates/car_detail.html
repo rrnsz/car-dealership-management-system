@@ -32,19 +32,60 @@
             padding: 0 1.5rem;
         }
 
-        .car-image-section {
-            background: white;
-            padding: 2rem;
+        .car-image-container {
+            position: relative;
+            width: 100%;
             border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
+            overflow: hidden;
         }
 
         .car-image {
             width: 100%;
-            height: 400px;
+            height: 800px;
             object-fit: cover;
-            border-radius: 15px;
+            border-radius: 20px;
+        }
+
+        .arrow-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .arrow-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .prev-btn {
+            left: 20px;
+        }
+
+        .next-btn {
+            right: 20px;
+        }
+
+        .image-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
         }
 
         .car-info-grid {
@@ -258,12 +299,20 @@
 
     <div class="car-detail-container">
         <!-- Car Image Section -->
-        <div class="car-image-section">
-            {% if car.image %}
-                <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}" class="car-image">
-            {% else %}
-                <div class="no-image">No image available</div>
-            {% endif %}
+        <div class="car-image-container">
+            <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}" class="car-image" id="carImage">
+            
+            <button class="arrow-btn prev-btn" onclick="changeImage(-1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <button class="arrow-btn next-btn" onclick="changeImage(1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <div class="image-counter">
+                <span id="currentImageNum">1</span> / <span id="totalImages">3</span>
+            </div>
         </div>
 
         <!-- Car Information Grid -->
@@ -425,6 +474,34 @@
         // Prevent modal close when clicking inside the modal content
         document.querySelector('.modal-content').addEventListener('click', function(e) {
             e.stopPropagation();
+        });
+
+        const images = [
+            "{{ car.image.url }}",
+            // Add more image URLs when you have them
+        ];
+        
+        let currentIndex = 0;
+        const carImage = document.getElementById('carImage');
+        const currentImageNum = document.getElementById('currentImageNum');
+        const totalImages = document.getElementById('totalImages');
+        
+        // Update total images count
+        totalImages.textContent = images.length;
+        
+        function changeImage(direction) {
+            currentIndex = (currentIndex + direction + images.length) % images.length;
+            carImage.src = images[currentIndex];
+            currentImageNum.textContent = currentIndex + 1;
+        }
+        
+        // Optional: Add keyboard arrow key support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                changeImage(-1);
+            } else if (e.key === 'ArrowRight') {
+                changeImage(1);
+            }
         });
     </script>
 </body>
