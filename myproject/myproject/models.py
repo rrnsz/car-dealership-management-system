@@ -3,10 +3,20 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
+from abc import ABC, abstractmethod
 
+
+# Add this at the top after your imports
+class SingletonMeta(type):
+    _instances = {}
+    
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+        return cls._instances[cls]
 
 # Custom User Manager
-class UserManager(BaseUserManager):
+class UserManager(BaseUserManager, metaclass=SingletonMeta):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError("The Email field must be set")
@@ -106,6 +116,56 @@ class Car(models.Model):
     
 
     
+# Add these strategy classes after your imports
+class OrderStatusStrategy(ABC):
+    @abstractmethod
+    def handle_status_change(self, order):
+        pass
+
+class PendingStrategy(OrderStatusStrategy):
+    def handle_status_change(self, order):
+        order.status = 'pending'
+        order.driver = None
+        order.delivery_date = None
+
+class ProcessingStrategy(OrderStatusStrategy):
+    def handle_status_change(self, order, staff, driver, delivery_date):
+        order.status = 'processing'
+        order.staff = staff
+        order.driver = driver
+        order.delivery_date = delivery_date
+
+class ShippedStrategy(OrderStatusStrategy):
+    def handle_status_change(self, order):
+        order.status = 'shipped'
+
+class DeliveredStrategy(OrderStatusStrategy):
+    def handle_status_change(self, order):
+        order.status = 'delivered'
+
+# Add these observer classes after your imports
+class OrderObserver(ABC):
+    @abstractmethod
+    def update(self, order):
+        pass
+
+class StockObserver(OrderObserver):
+    def update(self, order):
+        if order.status == 'processing':
+            car = order.car
+            if car.stock > 0:
+                car.stock -= 1
+                car.save()
+
+class NotificationObserver(OrderObserver):
+    def update(self, order):
+        if order.status == 'processing':
+            # You could implement actual notification logic here
+            print(f"Order {order.id} is now being processed")
+        elif order.status == 'delivered':
+            print(f"Order {order.id} has been delivered")
+
+# Modify the Order model to include the observer pattern
 class Order(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -124,6 +184,26 @@ class Order(models.Model):
     address = models.CharField(max_length=255)  
     payment_method = models.CharField(max_length=50)
 
+    _observers = []
+    
+    @classmethod
+    def add_observer(cls, observer):
+        cls._observers.append(observer)
+    
+    @classmethod
+    def remove_observer(cls, observer):
+        cls._observers.remove(observer)
+    
+    def notify_observers(self):
+        for observer in self._observers:
+            observer.update(self)
+    
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        if not is_new:  # Only notify on updates, not on creation
+            self.notify_observers()
+
     def __str__(self):
         return f"Order {self.id} - {self.car.make} {self.car.model}"
 
@@ -138,9 +218,24 @@ class Order(models.Model):
 
     def driver_details(self):
         return f"{self.driver.full_name}, License: {self.driver.license_number}, Phone: {self.driver.phone_number}"
-    
 
+    def update_status(self, new_status, **kwargs):
+        strategies = {
+            'pending': PendingStrategy(),
+            'processing': ProcessingStrategy(),
+            'shipped': ShippedStrategy(),
+            'delivered': DeliveredStrategy()
+        }
+        
+        strategy = strategies.get(new_status)
+        if strategy:
+            strategy.handle_status_change(self, **kwargs)
+            self.save()
+        return self
 
+# Initialize observers
+Order.add_observer(StockObserver())
+Order.add_observer(NotificationObserver())
 
 @receiver(post_migrate)
 def create_default_admin(sender, **kwargs):

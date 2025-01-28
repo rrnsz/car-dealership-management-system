@@ -281,33 +281,22 @@ def orders_history(request):
 
 
 def pending_orders(request):
-    pending_orders = Order.objects.filter(status='pending')
-    drivers = Driver.objects.all()
-
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
-        driver_user_id = request.POST.get('driver')  
+        driver_user_id = request.POST.get('driver')
         delivery_date = request.POST.get('delivery_date')
-
-
-        if not order_id or not driver_user_id:
-            raise ValueError("Order ID or Driver User ID is missing or invalid.")
-
-        try:
-            driver_user_id = int(driver_user_id)
-        except (ValueError, TypeError):
-            raise ValueError("Driver User ID must be a valid integer.")
-
+        
         order = get_object_or_404(Order, id=order_id)
-        driver = get_object_or_404(Driver, user_id=driver_user_id)  
-
-        order.staff = request.user.staff
-        order.driver = driver
-        order.delivery_date = delivery_date
-        order.status = 'processing'
-        order.save()
-
+        driver = get_object_or_404(Driver, user_id=driver_user_id)
+        
+        order.update_status('processing', 
+                          staff=request.user.staff,
+                          driver=driver,
+                          delivery_date=delivery_date)
+        
         return redirect('pending_orders')
+    pending_orders = Order.objects.filter(status='pending')
+    drivers = Driver.objects.all()
 
     return render(request, 'pending_orders.html', {
         'pending_orders': pending_orders,
@@ -380,8 +369,7 @@ def update_delivery_status(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     if request.method == 'POST':
         new_status = request.POST.get('status')
-        order.status = new_status
-        order.save()
+        order.update_status(new_status)
     return redirect('driver_dashboard')
 
 #  ------------------------------------------------------------------------------------------
@@ -462,3 +450,28 @@ def vehicles_view(request):
         "category": category
     }
     return render(request, "vehicles.html", context)
+
+@login_required
+def user_orders(request):
+    if request.user.role == 'customer':
+        # Get active orders (not delivered)
+        active_orders = Order.objects.filter(
+            customer=request.user.customer,
+            status__in=['pending', 'processing', 'shipped']
+        ).order_by('-order_date')
+        
+        # Get delivered orders (history)
+        delivered_orders = Order.objects.filter(
+            customer=request.user.customer,
+            status='delivered'
+        ).order_by('-order_date')
+        
+        context = {
+            'active_orders': active_orders,
+            'delivered_orders': delivered_orders,
+            'full_name': request.user.customer.full_name
+        }
+        return render(request, 'user_orders.html', context)
+    else:
+        messages.error(request, "Access denied.")
+        return redirect('index')

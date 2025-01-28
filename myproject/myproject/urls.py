@@ -41,6 +41,7 @@ urlpatterns = [
     path('car/<int:car_id>/', views.car_detail_view, name='car_detail'),
     path('create-order/<int:car_id>/', views.create_order, name='create_order'),
     path('vehicles/', views.vehicles_view, name='vehicles'),
+    path('my-orders/', views.user_orders, name='user_orders'),
 
 ]
 
