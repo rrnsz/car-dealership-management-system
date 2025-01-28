@@ -878,8 +878,8 @@
           <a class="nav-link" href="#header">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#inventory">Vehicles</a>
-        </li>
+          <a class="nav-link" href="{% url 'vehicles' %}">Vehicles</a>
+      </li>
         <li class="nav-item">
           <a class="nav-link" href="#features" onclick="scrollToSpotlight(event)">Features</a>
         </li>
@@ -912,7 +912,7 @@
     <p class="header-price animate__animated animate__fadeIn animate__delay-2s">
       Starting at $3,825,000
     </p>
-    <a href="#inventory" class="btn btn-explore animate__animated animate__fadeIn animate__delay-3s">
+    <a href="{% url 'vehicles' %}" class="btn btn-explore animate__animated animate__fadeIn animate__delay-3s">
       Explore Models
     </a>
   </div>
@@ -1005,41 +1005,6 @@
     </div>
   </div>
 </section>
-<section class="inventory py-5" id="inventory">
-  <div class="container">
-    <div class="row mb-5">
-        <div class="col d-flex flex-wrap text-uppercase justify-content-center">
-          <h1 class="font-weight-bold align-self-center mx-1">our</h1>
-          <h1 class="section-title--special mx-1">inventory</h1>
-        </div>
-      </div>
-    <div class="row mb-5">
-  <div class="col-10 mx-auto col-md-12 d-flex justify-content-end">
-    <button onclick="filterCars('all')" class="btn btn-outline-secondary text-uppercase mx-1 {% if not category or category == 'all' %}active{% endif %}">All</button>
-    <button onclick="filterCars('american')" class="btn btn-outline-secondary text-uppercase mx-1 {% if category == 'american' %}active{% endif %}">American</button>
-    <button onclick="filterCars('german')" class="btn btn-outline-secondary text-uppercase mx-1 {% if category == 'german' %}active{% endif %}">German</button>
-    <button onclick="filterCars('japanese')" class="btn btn-outline-secondary text-uppercase mx-1 {% if category == 'japanese' %}active{% endif %}">Japanese</button>
-    <button onclick="filterCars('italian')" class="btn btn-outline-secondary text-uppercase mx-1 {% if category == 'italian' %}active{% endif %}">Italian</button>
-  </div>
-</div>
-<div class="cars-grid">
-    {% for car in cars %}
-    <a href="{% url 'car_detail' car.id %}" class="car-link">
-        <div class="car-card">
-            <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}" class="car-image">
-            <div class="car-details">
-                <h3 class="car-title">{{ car.make }} {{ car.model }}</h3>
-                <div class="car-specs">
-                    <span><i class="fas fa-car"></i> {{ car.body_style }}</span>
-                    <span><i class="fas fa-cog"></i> {{ car.transmission }}</span>
-                    <span><i class="fas fa-gas-pump"></i> {{ car.fuel_grade }}</span>
-                </div>
-            </div>
-        </div>
-    </a>
-    {% endfor %}
-</div>
-</section>
 
 <div class="section question py-5" id="question">
   <div class="container">
@@ -1087,9 +1052,9 @@
                     <span><i class="fas fa-tachometer-alt"></i> 2.8s 0-60</span>
                     <span><i class="fas fa-coin"></i> $103,500</span>
                   </div>
-                  <button class="btn-discover" onclick="window.location.href='#inventory'">
+                  <a href="{% url 'vehicles' %}" class="btn-discover">
                     Discover More
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
@@ -1162,7 +1127,7 @@
             </p>
             <div class="cta-buttons animate__animated animate__fadeIn">
               <a href="{% url 'contact' %}" class="btn-primary">Contact Us</a>
-              <a href="#inventory" class="btn-secondary">View Collection</a>
+              <a href="{% url 'vehicles' %}" class="btn-secondary">View Collection</a>
             </div>
           </div>
         </div>

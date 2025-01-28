@@ -40,7 +40,7 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('car/<int:car_id>/', views.car_detail_view, name='car_detail'),
     path('create-order/<int:car_id>/', views.create_order, name='create_order'),
-
+    path('vehicles/', views.vehicles_view, name='vehicles'),
 
 ]
 

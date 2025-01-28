@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+{% load static %}
+{% load humanize %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Vehicles Collection - Luxury Auto Gallery</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #2d2d2d;
+            --accent: #c8a365;  /* Luxury gold accent */
+            --light: #ffffff;
+            --gray: #f8f9fa;
+            --dark-gray: #4a4a4a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--gray);
+            color: var(--primary);
+        }
+
+        .inventory-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('{% static "img/Bugatti.jpeg" %}') center/cover fixed;
+            height: 500px;  /* Increased height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light);
+            margin-top: 0;
+            position: relative;
+        }
+
+        .header-content {
+            text-align: center;
+            z-index: 2;
+            max-width: 1000px;  /* Increased width */
+            padding: 0 20px;
+        }
+
+        .header-title {
+            font-size: 4rem;  /* Larger title */
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .filter-section {
+            background: var(--light);
+            padding: 2.5rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 0 1rem;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 2px solid var(--accent);
+            border-radius: 30px;  /* Rounded buttons */
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: auto;
+            min-width: 140px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filter-btn:hover {
+            background: var(--accent);
+            color: var(--light);
+        }
+
+        .filter-btn.active {
+            background: var(--accent);
+            color: var(--light);
+            border: 2px solid var(--accent);
+        }
+
+        .cars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 3rem;
+            padding: 5rem 4rem;
+            background: var(--gray);
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .car-card {
+            background: var(--light);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .car-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+
+        .car-image-container {
+            position: relative;
+            overflow: hidden;
+            height: 300px;  /* Taller images */
+        }
+
+        .car-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .car-card:hover .car-image {
+            transform: scale(1.1);
+        }
+
+        .car-details {
+            padding: 2.5rem;
+            background: var(--light);
+        }
+
+        .car-title {
+            font-size: 2rem;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .car-specs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray);
+        }
+
+        .car-specs span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
+        .car-specs i {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .price-tag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: var(--light);
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(5px);
+            letter-spacing: 1px;
+        }
+
+        .car-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .car-link:hover {
+            text-decoration: none;
+        }
+
+        .stock-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--light);
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+        }
+
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 3rem;
+            }
+            
+            .cars-grid {
+                grid-template-columns: 1fr;
+                padding: 3rem 1.5rem;
+            }
+
+            .filter-buttons {
+                padding: 0 1rem;
+            }
+
+            .filter-btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.8rem;
+            }
+
+            .car-image-container {
+                height: 250px;
+            }
+        }
+
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.98) !important;
+            padding: 1rem 3rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            height: 70px;
+        }
+
+        .navbar-brand {
+            padding: 0;
+        }
+
+        .navbar-brand img {
+            height: 35px;
+            width: 35px;
+        }
+
+        .nav-item {
+            position: relative;
+            margin: 0 0.5rem;
+        }
+
+        .nav-link {
+            color: #1a1a1a !important;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 0.8rem 1.5rem !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #666 !important;
+        }
+
+        /* Push navigation items to the right */
+        .navbar-nav {
+            margin-left: auto;
+        }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+            outline: none;
+        }
+
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: white;
+                padding: 1rem;
+                margin-top: 0.5rem;
+            }
+        }
+
+        /* Hero section */
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('{% static "img/lamborghini-hero.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+        }
+
+        .hero-title {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-left: 10%;
+        }
+
+        /* Search and filters */
+        .search-container {
+            background: white;
+            padding: 2rem 10%;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .vehicles-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .sort-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sort-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #333;
+            background: white;
+        }
+
+        .reset-btn {
+            background: #111;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Vehicle cards */
+        .vehicles-grid {
+            background: #f8fafc;
+            padding: 2rem 10%;
+        }
+
+        .vehicle-card {
+            display: grid;
+            grid-template-columns: 350px 1fr auto;
+            gap: 2rem;
+            background: white;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .vehicle-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .vehicle-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .vehicle-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .spec-item i {
+            color: #888;
+            font-size: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            background: white;
+            color: #666;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .price-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-end;
+        }
+
+        .price-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .price-value {
+            background: #dc2626;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 1200px) {
+            .vehicle-card {
+                grid-template-columns: 300px 1fr auto;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .filters-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .vehicle-card {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .price-container {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Updated Navbar HTML -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <img src="{% static 'img/gearLogo.png' %}" alt="Gear Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'index' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="inventory-header">
+        <div class="header-content">
+            <h1 class="header-title">Exceptional Luxury Vehicles</h1>
+            <p class="header-subtitle">Discover our curated collection of premium automobiles, each representing the pinnacle of engineering excellence and luxury craftsmanship.</p>
+        </div>
+    </header>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="container">
+            <div class="filter-buttons">
+                <button type="button" onclick="filterCars('all')" class="filter-btn {% if not category %}active{% endif %}">
+                    ALL VEHICLES
+                </button>
+                <button type="button" onclick="filterCars('american')" class="filter-btn {% if category == 'american' %}active{% endif %}">
+                    AMERICAN
+                </button>
+                <button type="button" onclick="filterCars('german')" class="filter-btn {% if category == 'german' %}active{% endif %}">
+                    GERMAN
+                </button>
+                <button type="button" onclick="filterCars('japanese')" class="filter-btn {% if category == 'japanese' %}active{% endif %}">
+                    JAPANESE
+                </button>
+                <button type="button" onclick="filterCars('italian')" class="filter-btn {% if category == 'italian' %}active{% endif %}">
+                    ITALIAN
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cars Grid -->
+    <div class="cars-grid">
+        {% for car in cars %}
+        <a href="{% url 'car_detail' car.id %}" class="car-link">
+            <div class="car-card">
+                <div class="car-image-container">
+                    <div class="price-tag">${{ car.price|floatformat:0|intcomma }}</div>
+                    <div class="stock-badge">Stock: {{ car.stock }}</div>
+                    <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}" class="car-image">
+                </div>
+                <div class="car-details">
+                    <h3 class="car-title">{{ car.make }} {{ car.model }}</h3>
+                    <div class="car-specs">
+                        <span><i class="fas fa-car"></i> {{ car.body_style }}</span>
+                        <span><i class="fas fa-cog"></i> {{ car.transmission }}</span>
+                        <span><i class="fas fa-gas-pump"></i> {{ car.fuel_grade }}</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        function filterCars(category) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            fetch(`/filter-cars/?category=${category}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.querySelector('.cars-grid').innerHTML = data;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.padding = '0.7rem 0';
+                navbar.style.background = 'rgba(255, 255, 255, 0.98) !important';
+                navbar.style.boxShadow = '0 2px 15px rgba(0, 0, 0, 0.1)';
+            } else {
+                navbar.style.padding = '1rem 0';
+                navbar.style.background = 'rgba(255, 255, 255, 0.95) !important';
+                navbar.style.boxShadow = '0 2px 15px rgba(0, 0, 0, 0.08)';
+            }
+        });
+    </script>
+</body>
+</html>

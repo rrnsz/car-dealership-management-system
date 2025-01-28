@@ -448,3 +448,17 @@ def submit_inquiry(request, car_id):
         # For example, sending an email or saving to database
         messages.success(request, 'Your inquiry has been sent successfully!')
         return redirect('car_detail', car_id=car_id)
+
+def vehicles_view(request):
+    category = request.GET.get('category', None)
+
+    if category and category != "all":
+        cars = Car.objects.filter(category=category, stock__gt=0)
+    else:
+        cars = Car.objects.filter(stock__gt=0)
+
+    context = {
+        "cars": cars,
+        "category": category
+    }
+    return render(request, "vehicles.html", context)
