@@ -22,8 +22,35 @@
         }
 
         .navbar {
-            background: var(--bg-gradient);
-            padding: 1.5rem 0;
+            background-color: #222;
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .navbar-brand:hover {
+            color: white;
+        }
+
+        .nav-link {
+            color: white !important;
+            font-size: 1rem;
+            padding: 0 1.2rem !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ddd !important;
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .car-detail-container {
@@ -197,8 +224,8 @@
             }
         }
 
-
-        .custom-modal {
+        /* Modal Styles */
+        .modal {
             display: none;
             position: fixed;
             top: 0;
@@ -207,93 +234,200 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
-        }
-
-        .custom-modal.show {
-            display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 600px;
-            position: relative;
-            animation: slideIn 0.3s ease-out;
+        .modal.show {
+            display: flex;
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateY(-100px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        .modal-content {
+            background: #fff;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            background: #1e3c72;
+            color: white;
+            padding: 1rem;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h5 {
+            font-size: 1.1rem;
+            margin: 0;
+            font-weight: 500;
         }
 
         .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
             background: none;
             border: none;
+            color: white;
             font-size: 1.5rem;
             cursor: pointer;
-            color: #666;
+            padding: 0;
         }
 
         .contact-form {
-            margin-top: 1rem;
+            padding: 1rem;
+        }
+
+        .form-sections {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .form-section h6 {
+            color: #1e3c72;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.3rem;
+            color: #4a5568;
+            font-size: 0.9rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            padding: 0.5rem 0.8rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .form-control[readonly] {
+            background-color: #f7fafc;
+        }
+
+        .form-footer {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: flex-end;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .cancel-btn, .confirm-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background: none;
+            border: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        .confirm-btn {
+            background: #1e3c72;
+            border: none;
+            color: white;
+        }
+
+        @media (max-width: 480px) {
+            .modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+        }
+
+        .hover-effect {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-effect:hover {
+            transform: translateY(-2px);
+        }
+        
+        .user-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
             font-size: 1rem;
         }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        
+        .navbar-brand:hover .fa-car-side {
+            transform: translateX(5px);
+            transition: transform 0.3s ease;
         }
 
-        .submit-btn {
-            width: 100%;
-            background: var(--accent-color);
-            color: var(--text-dark);
-            padding: 1rem;
+        .success-content {
+            text-align: center;
+            padding: 2rem;
+            max-width: 400px;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #48bb78;
+            margin-bottom: 1rem;
+        }
+
+        .success-message h3 {
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .success-message p {
+            color: #4a5568;
+            margin-bottom: 1.5rem;
+        }
+
+        .ok-btn {
+            background: #1e3c72;
+            color: white;
             border: none;
-            border-radius: 10px;
-            font-weight: 600;
+            padding: 0.5rem 2rem;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 1rem;
             transition: all 0.3s ease;
         }
 
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        .ok-btn:hover {
+            background: #2a4e8f;
         }
     </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-dark">
+    <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <i class="fas fa-car-side me-2"></i>Luxury Motors
+                <i class="fas fa-cog"></i>
             </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Home</a>
+                {% if user.is_authenticated %}
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    {% if user.role == 'customer' %}
+                        <a class="nav-link">{{ full_name }}</a>
+                    {% else %}
+                        <a class="nav-link">{{ user.email }}</a>
+                    {% endif %}
+                {% else %}
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                {% endif %}
+            </div>
         </div>
     </nav>
 
@@ -352,7 +486,7 @@
             
                     <div class="spec-item">
                         <div class="spec-icon">
-                            <i the="fas fa-tag"></i>
+                            <i class="fas fa-tag"></i>
                         </div>
                         <div>
                             <small>Category</small>
@@ -360,7 +494,7 @@
                         </div>
                     </div>
             
-                    <div the="spec-item">
+                    <div class="spec-item">
                         <div class="spec-icon">
                             <i class="fas fa-car"></i>
                         </div>
@@ -393,58 +527,142 @@
             
                 <!-- Purchase Button -->
                 {% if request.user.is_authenticated %}
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#purchaseModal">
+                    <button type="button" class="btn btn-primary w-100" onclick="openPurchaseModal()">
                         <i class="fas fa-shopping-cart me-2"></i>Purchase Now
                     </button>
-                    <div class="modal fade" id="purchaseModal" tabindex="-1" aria-labelledby="purchaseModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="purchaseModalLabel">Purchase {{ car.make }} {{ car.model }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <form method="POST" action="{% url 'create_order' car.id %}">
-                                    {% csrf_token %}
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label for="fullName" class="form-label">Full Name</label>
-                                            <input type="text" class="form-control" id="fullName" name="fullName" value="{{ request.user.customer.full_name }}" readonly>
+
+                    <!-- Purchase Modal -->
+                    <div id="purchaseModal" class="modal">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5>Purchase {{ car.make }} {{ car.model }}</h5>
+                                <button type="button" class="modal-close" onclick="closePurchaseModal()">&times;</button>
+                            </div>
+                            <form method="POST" action="{% url 'create_order' car.id %}" class="contact-form">
+                                {% csrf_token %}
+                                <div class="form-sections">
+                                    <div class="form-section">
+                                        <h6>Personal Information</h6>
+                                        <div class="form-group">
+                                            <label>Full Name</label>
+                                            <input type="text" class="form-control" name="fullName" 
+                                                   value="{{ request.user.customer.full_name }}" readonly>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="email" class="form-label">Email</label>
-                                            <input type="email" class="form-control" id="email" name="email" value="{{ request.user.email }}" readonly>
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input type="email" class="form-control" name="email" 
+                                                   value="{{ request.user.email }}" readonly>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="phone" class="form-label">Phone Number</label>
-                                            <input type="text" class="form-control" id="phone" name="phone" value="{{ request.user.customer.phone_number }}" readonly> 
+                                        <div class="form-group">
+                                            <label>Phone Number</label>
+                                            <input type="text" class="form-control" name="phone" 
+                                                   value="{{ request.user.customer.phone_number }}" readonly>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="address" class="form-label">Address</label>
-                                            <input type="text" class="form-control" id="address" name="address" required>
+                                    </div>
+                                    
+                                    <div class="form-section">
+                                        <h6>Delivery Details</h6>
+                                        <div class="form-group">
+                                            <label>Delivery Address</label>
+                                            <input type="text" class="form-control" name="address" required 
+                                                   placeholder="Enter your delivery address">
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="paymentMethod" class="form-label">Payment Method</label>
-                                            <select class="form-select" id="paymentMethod" name="paymentMethod">
+                                        <div class="form-group">
+                                            <label>Payment Method</label>
+                                            <select class="form-control" name="paymentMethod" required>
+                                                <option value="" disabled selected>Select Payment Method</option>
                                                 <option value="credit">Credit Card</option>
                                                 <option value="paypal">PayPal</option>
                                                 <option value="cash">Cash on Delivery</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary">Confirm Purchase</button>
-                                    </div>
-                                </form>
+                                </div>
+                                
+                                <div class="form-footer">
+                                    <button type="button" class="cancel-btn" onclick="closePurchaseModal()">Cancel</button>
+                                    <button type="submit" class="confirm-btn">Confirm Purchase</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Success Modal -->
+                    <div id="successModal" class="modal">
+                        <div class="modal-content success-content">
+                            <div class="success-message">
+                                <i class="fas fa-check-circle success-icon"></i>
+                                <h3>Thank You for Your Purchase!</h3>
+                                <p>We will contact you soon with further details.</p>
+                                <button class="ok-btn" onclick="closeSuccessModal()">OK</button>
                             </div>
                         </div>
                     </div>
                 {% else %}
-                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary">
-                        Log in to Purchase
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary w-100">
+                        <i class="fas fa-shopping-cart me-2"></i>Purchase Now
                     </a>
                 {% endif %}
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <script>
+        function openPurchaseModal() {
+            document.getElementById('purchaseModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
 
+        function closePurchaseModal() {
+            document.getElementById('purchaseModal').classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('purchaseModal');
+            if (event.target === modal) {
+                closePurchaseModal();
+            }
+        }
+
+        // Prevent modal from closing when clicking inside the modal content
+        document.querySelector('.modal-content').onclick = function(event) {
+            event.stopPropagation();
+        }
+
+        function showSuccessModal() {
+            document.getElementById('successModal').style.display = 'flex';
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').style.display = 'none';
+            window.location.href = "{% url 'index' %}"; // Redirect to home page
+        }
+
+        // Modify your form submission
+        document.querySelector('.contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    closePurchaseModal();
+                    showSuccessModal();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
 </html>

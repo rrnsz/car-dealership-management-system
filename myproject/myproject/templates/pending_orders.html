@@ -9,49 +9,117 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        
+        .navbar {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.4rem;
+        }
+
         .container {
-            margin-top: 20px;
+            margin-top: 30px;
+            padding: 0 25px;
         }
-        .table th, .table td {
+
+        .page-header {
+            background: white;
+            padding: 20px 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .page-header h2 {
+            margin: 0;
+            color: #2a5298;
+            font-weight: 600;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            padding: 20px;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            color: #495057;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .table td, .table th {
+            padding: 1rem;
             vertical-align: middle;
         }
-        .form-select, .form-control {
-            width: 100%;
+
+        .form-select {
+            padding: 0.375rem 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
+
+        .form-select:focus, .form-control:focus {
+            border-color: #2a5298;
+            box-shadow: 0 0 0 0.2rem rgba(42,82,152,0.25);
+        }
+
         .btn-primary {
-            width: 100%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border: none;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
-        .navbar {
-            margin-bottom: 20px;
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(42,82,152,0.2);
         }
-        .action-card {
-            text-decoration: none;
-            color: inherit;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            text-align: center;
-            transition: transform 0.2s;
-            background-color: #fff;
+
+        /* Custom styles for specific elements */
+        .customer-name {
+            font-weight: 500;
+            color: #2a5298;
         }
-        .action-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        .order-id {
+            font-family: monospace;
+            font-weight: 600;
         }
-        .action-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: #007bff;
+
+        .car-details {
+            background: #f8f9fa;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
         }
-        .action-content h3 {
-            margin: 0;
-            font-size: 1.2rem;
-        }
-        .action-content p {
-            margin: 0;
-            color: #666;
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .table-responsive {
+                border-radius: 10px;
+            }
         }
     </style>
 </head>
@@ -71,57 +139,71 @@
     </nav>
 
     <div class="container">
-        <h2 class="mb-4">Pending Orders</h2>
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Order Date</th>
-                        <th>Customer Name</th>
-                        <th>Email</th>
-                        <th>Phone Number</th>
-                        <th>Payment Method</th>
-                        <th>Address</th>
-                        <th>Car Details</th>
-                        <th>Driver</th>
-                        <th>Delivery Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for order in pending_orders %}
-                    <tr>
-                        <td>{{ order.id }}</td>
-                        <td>{{ order.order_date }}</td>
-                        <td>{{ order.customer.full_name }}</td>
-                        <td>{{ order.customer.user.email }}</td>
-                        <td>{{ order.customer.phone_number }}</td>
-                        <td>{{ order.payment_method }}</td>
-                        <td>{{ order.address }}</td>
-                        <td>{{ order.car.make }} {{ order.car.model }}</td>
-                        <td>
-                            <form method="POST" action="{% url 'pending_orders' %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="order_id" value="{{ order.id }}">
-                                <select class="form-select" name="driver" required>
-                                    <option value="">Select Driver</option>
-                                    {% for driver in drivers %}
-                                    <option value="{{ driver.user_id }}">{{ driver.full_name }}</option>
-                                    {% endfor %}
-                                </select>
-                        </td>
-                        <td>
-                            <input type="date" class="form-control delivery-date" name="delivery_date" min="{{ timezone.now|date:'Y-m-d' }}" required>
-                        </td>
-                        <td>
-                            <button type="submit" class="btn btn-primary">Confirm Order</button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="page-header">
+            <h2><i class="fas fa-clipboard-list mr-2"></i>Pending Orders</h2>
+        </div>
+        
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Order Date</th>
+                            <th>Customer Info</th>
+                            <th>Payment & Delivery</th>
+                            <th>Car Details</th>
+                            <th>Assignment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in pending_orders %}
+                        <tr>
+                            <td class="order-id">#{{ order.id }}</td>
+                            <td>{{ order.order_date|date:"M d, Y" }}</td>
+                            <td>
+                                <div class="customer-name">{{ order.customer.full_name }}</div>
+                                <small class="text-muted">
+                                    <i class="fas fa-envelope mr-1"></i>{{ order.customer.user.email }}<br>
+                                    <i class="fas fa-phone mr-1"></i>{{ order.customer.phone_number }}
+                                </small>
+                            </td>
+                            <td>
+                                <div><i class="fas fa-credit-card mr-1"></i>{{ order.payment_method }}</div>
+                                <small class="text-muted">
+                                    <i class="fas fa-map-marker-alt mr-1"></i>{{ order.address }}
+                                </small>
+                            </td>
+                            <td>
+                                <div class="car-details">
+                                    <i class="fas fa-car mr-1"></i>{{ order.car.make }} {{ order.car.model }}
+                                </div>
+                            </td>
+                            <td>
+                                <form method="POST" action="{% url 'pending_orders' %}" class="assignment-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                                    <div class="form-group mb-2">
+                                        <select class="form-select" name="driver" required>
+                                            <option value="">Select Driver</option>
+                                            {% for driver in drivers %}
+                                            <option value="{{ driver.user_id }}">{{ driver.full_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <input type="date" class="form-control delivery-date" name="delivery_date" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        <i class="fas fa-check mr-1"></i>Confirm Order
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

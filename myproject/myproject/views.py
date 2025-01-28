@@ -15,14 +15,30 @@ from myproject import models
 def create_order(request, car_id):
     car = get_object_or_404(Car, id=car_id)
     if request.method == 'POST':
-        Order.objects.create(
-            customer=request.user.customer, 
-            car=car,
-            address=request.POST.get('address'),
-            payment_method=request.POST.get('paymentMethod'),
-            status='pending'
-        )
-        return redirect('index') 
+        try:
+            Order.objects.create(
+                customer=request.user.customer, 
+                car=car,
+                address=request.POST.get('address'),
+                payment_method=request.POST.get('paymentMethod'),
+                status='pending'
+            )
+            # If it's an AJAX request, return JSON response
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Order created successfully'
+                })
+            # For regular form submission, redirect to index
+            return redirect('index')
+        except Exception as e:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'error',
+                    'message': str(e)
+                }, status=400)
+            messages.error(request, f"Error creating order: {str(e)}")
+            return redirect('car_detail', car_id=car_id)
     else:
         return render(request, 'car_detail.html', {'car': car})
     
@@ -414,8 +430,16 @@ def car_detail_view(request, car_id):
     context = {
         'car': car
     }
+    
+    # Add user information to context
+    if request.user.is_authenticated:
+        try:
+            customer = Customer.objects.get(user=request.user)
+            context['full_name'] = customer.full_name
+        except Customer.DoesNotExist:
+            context['full_name'] = request.user.email
+            
     return render(request, 'car_detail.html', context)
-
 
 
 def submit_inquiry(request, car_id):
