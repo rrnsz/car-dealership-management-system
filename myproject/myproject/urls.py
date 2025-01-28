@@ -14,6 +14,7 @@ urlpatterns = [
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('staff-dashboard/', views.staff_dashboard, name='staff_dashboard'),
     path('driver-dashboard/', views.driver_dashboard, name='driver_dashboard'),
+    path('update-delivery-status/<int:order_id>/', views.update_delivery_status, name='update_delivery_status'),
     path('logout/', views.logout_view, name='logout'),
 
     # Staff Management URLs
@@ -29,16 +30,17 @@ urlpatterns = [
     path('delete-driver/<int:driver_id>/', views.delete_driver, name='delete_driver'),
 
     # Car Management URLs
+    path('pending-orders/', views.pending_orders, name='pending_orders'),
+    path('orders_history/', views.orders_history, name='orders_history'),
     path('manage-cars/', views.manage_cars, name='manage_cars'),
     path('add-car/', views.add_car, name='add_car'),
     path('edit-car/<int:car_id>/', views.edit_car, name='edit_car'),
 
-
     path('filter-cars/', views.filter_cars, name='filter_cars'),
-    path('', views.index, name='index'),
     path('contact/', views.contact, name='contact'),
     path('car/<int:car_id>/', views.car_detail_view, name='car_detail'),
-    path('submit-inquiry/<int:car_id>/', views.submit_inquiry, name='submit_inquiry'),
+    path('create-order/<int:car_id>/', views.create_order, name='create_order'),
+
 
 ]
 
@@ -46,5 +48,3 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-
-    

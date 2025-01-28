@@ -228,7 +228,6 @@
     </style>
 </head>
 <body>
-    <!-- Top Navigation -->
     <nav class="top-nav">
         <div class="nav-brand">
             <img src="https://i.imgur.com/YPFtPGF.png" alt="Logo" class="brand-logo">
@@ -258,7 +257,6 @@
         </a>
     </nav>
 
-    <!-- Main Content -->
     <main class="main-content">
         <div class="welcome-section">
             <h1 class="welcome-title">Welcome back, {{ request.user.get_full_name }}</h1>
@@ -268,18 +266,18 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <i class="fas fa-car stat-icon"></i>
-                <div class="stat-value">{{ inventory_count|default:"45" }}</div>
+                <div class="stat-value">{{ inventory_count }}</div>
                 <div class="stat-label">Available Cars</div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-chart-line stat-icon"></i>
-                <div class="stat-value">{{ monthly_sales|default:"12" }}</div>
-                <div class="stat-label">Monthly Sales</div>
+                <div class="stat-value">{{ total_orders }}</div>
+                <div class="stat-label">Total Orders</div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-users stat-icon"></i>
-                <div class="stat-value">{{ leads_count|default:"28" }}</div>
-                <div class="stat-label">Active Leads</div>
+                <div class="stat-value">{{ total_drivers }}</div>
+                <div class="stat-label">Total Drivers</div>
             </div>
         </div>
 
@@ -291,11 +289,18 @@
                     <p>Add, update, or remove vehicles from inventory</p>
                 </div>
             </a>
-            <a href="#" class="action-card">
+            <a href="{% url 'pending_orders' %}" class="action-card">
+                    <i class="fas fa-car action-icon"></i>
+                    <div class="action-content">
+                        <h3>Pending Orders</h3>
+                        <p>Manage pending Orders</p>
+                    </div>
+            </a>
+            <a href="{% url 'orders_history' %}" class="action-card">
                 <i class="fas fa-file-contract action-icon"></i>
                 <div class="action-content">
-                    <h3>Sales Records</h3>
-                    <p>Access and manage your complete sales history</p>
+                    <h3>Order Records</h3>
+                    <p>Orders history</p>
                 </div>
             </a>
         </div>

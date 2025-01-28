@@ -1,4 +1,4 @@
-from django import forms # type: ignore
+from django import forms 
 from .models import Staff, Driver, User, Car
 
 class StaffForm(forms.ModelForm):

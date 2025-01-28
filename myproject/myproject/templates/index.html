@@ -6,14 +6,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <!-- bootstrap css -->
    
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-  <!-- main css -->
   <link rel="stylesheet" href="{% static 'css/main.css' %}">
-  <!-- google fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Add animate.css for smooth animations -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
   <title>Luxury Auto Gallery</title>
@@ -30,7 +26,6 @@
       background: var(--light);
     }
 
-    /* Modern Minimal Navbar */
     .navbar {
       padding: 1.5rem 2rem;
       background: transparent;
@@ -66,7 +61,6 @@
       width: 100%;
     }
 
-    /* Hero Section Redesign */
     .header {
       height: 100vh;
       background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
@@ -112,7 +106,6 @@
       transform: translateY(-3px);
     }
 
-    /* Inventory Grid Redesign */
     .inventory {
       background: var(--gray);
       padding: 8rem 0;
@@ -539,7 +532,6 @@
       margin-top: 0.5rem;
     }
 
-    /* Why Choose Us Section */
     .why-choose-us {
       background: var(--light);
       padding: 100px 0;
@@ -814,13 +806,12 @@
       padding: 2rem;
     }
 
-    /* Add these more specific rules to your existing styles */
     .car-link {
-        text-decoration: none !important;  /* Force remove underline */
+        text-decoration: none !important;
         color: inherit;
         display: block;
         transition: transform 0.3s ease;
-        outline: none !important;  /* Force remove outline */
+        outline: none !important;  
     }
 
     .car-link:hover,
@@ -832,7 +823,6 @@
         color: inherit;
     }
 
-    /* Remove blue line from the car name link */
     .car-details h2 a,
     .car-details h2 a:hover,
     .car-details h2 a:focus,
@@ -843,7 +833,6 @@
         outline: none !important;
     }
 
-    /* Rest of your existing styles */
     .car-card {
         border-radius: 15px;
         overflow: hidden;
@@ -874,13 +863,7 @@
 </head>
 
 <body>
-<!-- preloader 
-<div class="preloader d-flex justify-content-center align-items-center">
-  <img src="{% static 'img/preloader.gif" alt="preloader">
-</div>-->
-<!-- end of preloader -->
 
-<!-- nav section -->
 <nav class="navbar navbar-expand-lg">
   <div class="container">
     <a class="navbar-brand" href="#">
@@ -919,9 +902,7 @@
     </div>
   </div>
 </nav>
-<!-- end of nav section -->
 
-<!-- header -->
 <header class="header" id="header">
   <div class="header-content">
     <p class="header-subtitle animate__animated animate__fadeIn">Ultimate Performance</p>
@@ -936,9 +917,7 @@
     </a>
   </div>
 </header>
-<!-- end of header section -->
 
-<!-- Why Choose Us Section -->
 <section class="why-choose-us py-5">
   <div class="container">
     <div class="row mb-5">
@@ -949,7 +928,6 @@
     </div>
 
     <div class="row g-4">
-      <!-- Feature 1 -->
       <div class="col-lg-3 col-md-6">
         <div class="feature-card animate__animated animate__fadeInUp">
           <div class="feature-icon">
@@ -962,7 +940,6 @@
         </div>
       </div>
 
-      <!-- Feature 2 -->
       <div class="col-lg-3 col-md-6">
         <div class="feature-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
           <div class="feature-icon">
@@ -975,7 +952,6 @@
         </div>
       </div>
 
-      <!-- Feature 3 -->
       <div class="col-lg-3 col-md-6">
         <div class="feature-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
           <div class="feature-icon">
@@ -988,7 +964,6 @@
         </div>
       </div>
 
-      <!-- Feature 4 -->
       <div class="col-lg-3 col-md-6">
         <div class="feature-card animate__animated animate__fadeInUp" style="animation-delay: 0.6s;">
           <div class="feature-icon">
@@ -1002,7 +977,6 @@
       </div>
     </div>
 
-    <!-- Stats Row -->
     <div class="row mt-5 pt-5 stats-row">
       <div class="col-lg-3 col-md-6 mb-4">
         <div class="stat-card text-center animate__animated animate__fadeIn">
@@ -1031,20 +1005,14 @@
     </div>
   </div>
 </section>
-
-<!-- inventory section -->
 <section class="inventory py-5" id="inventory">
   <div class="container">
-    <!-- section title -->
     <div class="row mb-5">
         <div class="col d-flex flex-wrap text-uppercase justify-content-center">
           <h1 class="font-weight-bold align-self-center mx-1">our</h1>
           <h1 class="section-title--special mx-1">inventory</h1>
         </div>
       </div>
-    <!-- end of section title -->
-  
-    <!-- buttons row -->
     <div class="row mb-5">
   <div class="col-10 mx-auto col-md-12 d-flex justify-content-end">
     <button onclick="filterCars('all')" class="btn btn-outline-secondary text-uppercase mx-1 {% if not category or category == 'all' %}active{% endif %}">All</button>
@@ -1054,9 +1022,6 @@
     <button onclick="filterCars('italian')" class="btn btn-outline-secondary text-uppercase mx-1 {% if category == 'italian' %}active{% endif %}">Italian</button>
   </div>
 </div>
-<!-- end of button row -->
-
-<!-- cars -->
 <div class="cars-grid">
     {% for car in cars %}
     <a href="{% url 'car_detail' car.id %}" class="car-link">
@@ -1075,31 +1040,23 @@
     {% endfor %}
 </div>
 </section>
-<!-- end of inventory section -->
 
-<!-- question section -->
 <div class="section question py-5" id="question">
   <div class="container">
     <div class="row">
-      <!-- single question first -->
       <div class="col-10 mx-auto my-2 col-md-6 d-flex justify-content-between question-grey p-4">
-        <!-- first flexbox child -->
         <a href="#" class="question-icon mr-3">
           <i class="fas fa-search fa-fw"></i>
         </a>
-        <!-- second flexbox child -->
         <div class="question-text w-75">
           <h4 class="question-title text-capitalize font-weight-bold">are you looking for a car?</h4>
           <p class="question-info">Find Your Dream Car Today! Explore our wide range of vehicles and drive home in style.</p>
         </div>
       </div>
-      <!-- single question second -->
       <div class="col-10 mx-auto my-2 col-md-6 d-flex justify-content-between question-yellow p-4">
-        <!-- first flexbox child -->
         <a href="#" class="question-icon mr-3">
           <i class="fas fa-dollar-sign fa-fw"></i>
         </a>
-        <!-- second flexbox child -->
         <div class="question-text w-75">
           <h4 class="question-title text-capitalize font-weight-bold">do you want to sell a car?</h4>
           <p class="question-info">Turn Your Car into Cash! Contact us to get the best value for your vehicle. </p>
@@ -1108,21 +1065,15 @@
     </div>
   </div>
 </div>
-<!-- end of question section -->
-
-<!-- Featured Section -->
 <section class="featured-section" id="featured">
   <div class="container-fluid px-0">
-    <!-- Featured Header -->
     <div class="featured-header text-center py-5">
       <h6 class="text-accent animate__animated animate__fadeIn">DISCOVER EXCELLENCE</h6>
       <h2 class="section-title animate__animated animate__fadeIn">This Month's Spotlight</h2>
     </div>
 
-    <!-- Featured Gallery -->
     <div class="featured-gallery">
       <div class="row g-0">
-        <!-- Main Featured Car -->
         <div class="col-lg-6">
           <div class="featured-main">
             <div class="featured-image">
@@ -1145,11 +1096,9 @@
           </div>
         </div>
 
-        <!-- Featured Grid -->
         <div class="col-lg-6">
           <div class="featured-grid">
             <div class="row g-0">
-              <!-- Grid Item 1 -->
               <div class="col-md-6">
                 <div class="grid-item">
                   <img src="{% static 'img/porsche-911-gt3.jpg' %}" alt="Luxury Car">
@@ -1171,7 +1120,6 @@
                   </div>
                 </div>
               </div>
-              <!-- Grid Item 3 -->
               <div class="col-md-6">
                 <div class="grid-item">
                   <img src="{% static 'img/Bugatti.jpeg' %}" alt="Bugatti Chiron">
@@ -1182,7 +1130,6 @@
                   </div>
                 </div>
               </div>
-              <!-- Grid Item 4 -->
               <div class="col-md-6">
                 <div class="grid-item">
                   <img src="{% static 'img/Lamborghini Huracán.jpeg' %}" alt="Lamborghini Huracán">
@@ -1201,7 +1148,7 @@
   </div>
 </section>
 
-<!-- End Section - Call to Action -->
+
 <section class="cta-section">
   <div class="container">
     <div class="cta-wrapper">
@@ -1244,7 +1191,7 @@
   </div>
 </section>
 
-<!-- footer -->
+
 <footer class="footer py-5">
   <div class="footer-icons d-flex justify-content-around">
     <a href="#link" class="footer-icon">
@@ -1259,14 +1206,11 @@
     <a href="#" class="footer-icon">
       <i class="fab fa-linkedin"></i>
     </a>
-    <!-- <a href="#" class="footer-icon">
-      <i class="fab fa-google-plus"></i>
-    </a> -->
   </div>
 </footer>
 
 <script>
-  // Add navbar background on scroll
+
   window.addEventListener('scroll', function() {
     if (window.scrollY > 50) {
       document.querySelector('.navbar').classList.add('scrolled');
@@ -1277,7 +1221,7 @@
 
   function filterCars(category) {
     event.preventDefault();
-    // Update active button
+
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
     event.target.classList.add('active');
     
@@ -1290,14 +1234,14 @@
       .catch(error => console.error('Error:', error));
   }
 
-  // Animate stats numbers with improved performance
+
   function animateStats() {
     const stats = document.querySelectorAll('.stat-number');
     stats.forEach(stat => {
       const target = parseInt(stat.getAttribute('data-value'));
       let current = 0;
-      const duration = 1000; // 1 second duration
-      const steps = 20; // More steps for smoother animation
+      const duration = 1000; 
+      const steps = 20; 
       const increment = target / steps;
       const stepTime = duration / steps;
 
@@ -1313,12 +1257,10 @@
     });
   }
 
-  // Trigger animation immediately when the section is loaded
   document.addEventListener('DOMContentLoaded', function() {
     animateStats();
   });
 
-  // Also trigger on scroll if needed
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -1341,12 +1283,9 @@
   }
 </script>
 
-<!-- Add FontAwesome CDN -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- Your category buttons and car grid HTML here -->
 
-<!-- Add this script at the bottom of your body tag -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const categoryButtons = document.querySelectorAll('.category-btn');
@@ -1354,14 +1293,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     categoryButtons.forEach(button => {
         button.addEventListener('click', function() {
-            // Remove active class from all buttons
             categoryButtons.forEach(btn => btn.classList.remove('active'));
-            // Add active class to clicked button
             this.classList.add('active');
 
             const category = this.textContent;
             
-            // Simple fetch request
             fetch(`/inventory/?category=${category}`)
                 .then(response => response.text())
                 .then(data => {

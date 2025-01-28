@@ -2,9 +2,30 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import User, Customer, Staff, Driver, Car
+from .models import User, Customer, Staff, Driver, Car, Order
 from .forms import StaffForm, DriverForm, CarForm
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q, Sum
 
+from myproject import models
+
+
+
+@login_required
+def create_order(request, car_id):
+    car = get_object_or_404(Car, id=car_id)
+    if request.method == 'POST':
+        Order.objects.create(
+            customer=request.user.customer, 
+            car=car,
+            address=request.POST.get('address'),
+            payment_method=request.POST.get('paymentMethod'),
+            status='pending'
+        )
+        return redirect('index') 
+    else:
+        return render(request, 'car_detail.html', {'car': car})
+    
 # Authentication Views ------------------------------------------------------------------------------------------
 def login_view(request):
     if request.method == "POST":
@@ -71,7 +92,17 @@ def logout_view(request):
 
 # Admin Dashboard Views ------------------------------------------------------------------------------------------
 def admin_dashboard(request):
-    return render(request, "admin_dashboard.html")
+    total_cars = Car.objects.aggregate(total_stock=Sum('stock'))['total_stock'] or 0
+    total_staff = Staff.objects.count()
+    total_drivers = Driver.objects.count()
+
+    context = {
+        'total_cars': total_cars,
+        'total_staff': total_staff,
+        'total_drivers': total_drivers,
+    }
+
+    return render(request, "admin_dashboard.html", context)
 
 # Staff Management Views ------------------------------------------------------------------------------------------
 def manage_staff(request):
@@ -211,9 +242,61 @@ def delete_driver(request, driver_id):
 
 
 # Staff ------------------------------------------------------------------------------------------
-
 def staff_dashboard(request):
-    return render(request, "staff_dashboard.html")
+    total_cars = Car.objects.aggregate(total_stock=Sum('stock'))['total_stock'] or 0
+    total_orders = Order.objects.count()
+    total_drivers = Driver.objects.count()
+
+    context = {
+        'inventory_count': total_cars,
+        'total_orders': total_orders,
+        'total_drivers': total_drivers,
+    }
+
+    return render(request, "staff_dashboard.html", context)
+
+def orders_history(request):
+
+    completed_orders = Order.objects.exclude(status='pending')
+    
+    return render(request, 'orders_history.html', {
+        'completed_orders': completed_orders,
+    })
+
+
+def pending_orders(request):
+    pending_orders = Order.objects.filter(status='pending')
+    drivers = Driver.objects.all()
+
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        driver_user_id = request.POST.get('driver')  
+        delivery_date = request.POST.get('delivery_date')
+
+
+        if not order_id or not driver_user_id:
+            raise ValueError("Order ID or Driver User ID is missing or invalid.")
+
+        try:
+            driver_user_id = int(driver_user_id)
+        except (ValueError, TypeError):
+            raise ValueError("Driver User ID must be a valid integer.")
+
+        order = get_object_or_404(Order, id=order_id)
+        driver = get_object_or_404(Driver, user_id=driver_user_id)  
+
+        order.staff = request.user.staff
+        order.driver = driver
+        order.delivery_date = delivery_date
+        order.status = 'processing'
+        order.save()
+
+        return redirect('pending_orders')
+
+    return render(request, 'pending_orders.html', {
+        'pending_orders': pending_orders,
+        'drivers': drivers,
+    })
 
 def manage_cars(request):
     cars = Car.objects.all()
@@ -256,12 +339,34 @@ def edit_car(request, car_id):
 
 # Driver ------------------------------------------------------------------------------------------
 
+
 def driver_dashboard(request):
-    return render(request, "driver_dashboard.html")
+    driver = Driver.objects.get(user=request.user)
+    
+    orders = Order.objects.filter(driver=driver)
+    
+    active_deliveries = orders.exclude(status='delivered')
+    completed_deliveries = orders.filter(status='delivered')
+    
+    context = {
+        'driver': driver,
+        'active_deliveries': active_deliveries,
+        'completed_deliveries': completed_deliveries,
+        'in_progress_count': active_deliveries.filter(Q(status='processing') | Q(status='shipped')).count(),
+        'completed_count': completed_deliveries.count(),
+    }
+    
+    return render(request, "driver_dashboard.html", context)
 
 
 
-
+def update_delivery_status(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        order.status = new_status
+        order.save()
+    return redirect('driver_dashboard')
 
 #  ------------------------------------------------------------------------------------------
 

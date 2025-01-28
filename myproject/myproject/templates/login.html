@@ -6,9 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Login / Register</title>
-  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-  <!-- Custom CSS -->
   <style>
     body {
       background: url("{% static 'img/questionBcg.jpeg' %}") no-repeat center center fixed;
@@ -82,7 +80,6 @@
 </head>
 <body>
   <div class="auth-box">
-   <!-- Login Form -->
 
 <div id="login-form">
     <h2>Login</h2>
@@ -106,7 +103,6 @@
     </div>
   </div>
 
-<!-- Registration Form -->
 <div id="register-form" class="hidden">
     <h2>Register</h2>
     <form action="{% url 'register' %}" method="post">
@@ -134,9 +130,7 @@
     </div>
   </div>
 
-  <!-- JavaScript for Toggle -->
   <script>
-    // Toggle between login and register forms
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
     const showRegister = document.getElementById('show-register');

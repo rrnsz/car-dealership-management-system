@@ -138,16 +138,16 @@
         }
     </style>
 </head>
+
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-dark mb-4">
+    <nav class="navbar navbar-dark bg-dark mb-4">
         <div class="container">
             <a class="navbar-brand" href="#">
                 <i class="fas fa-truck me-2"></i>
                 Driver Portal
             </a>
             <div class="d-flex align-items-center">
-                <span class="text-white me-3">Welcome, {{ driver.name }}</span>
+                <span class="text-white me-3">Welcome, {{ driver.full_name }}</span>
                 <a href="{% url 'logout' %}" class="btn btn-light">
                     <i class="fas fa-sign-out-alt me-1"></i> Logout
                 </a>
@@ -156,18 +156,10 @@
     </nav>
 
     <div class="container">
-        <!-- Dashboard Header -->
         <div class="dashboard-header">
             <h2 class="mb-0">My Deliveries Dashboard</h2>
         </div>
-
-        <!-- Stats Overview -->
-        <div class="stats-container">
-            <div class="stat-card text-center">
-                <i class="fas fa-clock"></i>
-                <h3>{{ pending_count }}</h3>
-                <p class="text-muted mb-0">Pending Deliveries</p>
-            </div>
+        <div class="stats-container d-flex justify-content-around my-4">
             <div class="stat-card text-center">
                 <i class="fas fa-truck-loading"></i>
                 <h3>{{ in_progress_count }}</h3>
@@ -180,7 +172,6 @@
             </div>
         </div>
 
-        <!-- Delivery Tabs -->
         <div class="tab-container">
             <div class="d-flex mb-4">
                 <button class="tab-button active" onclick="showTab('active')">
@@ -191,34 +182,38 @@
                 </button>
             </div>
 
-            <!-- Active Deliveries -->
             <div id="active-deliveries">
-                {% if deliveries %}
-                    {% for delivery in deliveries %}
-                    <div class="delivery-card">
-                        <div class="delivery-header d-flex justify-content-between align-items-center">
+                {% if active_deliveries %}
+                    {% for delivery in active_deliveries %}
+                    <div class="delivery-card card mb-3">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Delivery #{{ delivery.id }}</h5>
-                            <span class="status-badge {% if delivery.status == 'pending' %}status-pending{% elif delivery.status == 'in_progress' %}status-progress{% else %}status-completed{% endif %}">
+                            <span class="badge {% if delivery.status == 'pending' %}bg-warning{% elif delivery.status == 'processing' %}bg-primary{% elif delivery.status == 'shipped' %}bg-info{% else %}bg-success{% endif %}">
                                 {{ delivery.status|title }}
                             </span>
                         </div>
-                        <div class="delivery-body">
+                        <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
                                     <p><i class="fas fa-car me-2"></i>{{ delivery.car.make }} {{ delivery.car.model }}</p>
-                                    <p><i class="fas fa-user me-2"></i>{{ delivery.customer.name }}</p>
-                                    <p><i class="fas fa-map-marker-alt me-2"></i>{{ delivery.delivery_address }}</p>
-                                    <p><i class="fas fa-phone me-2"></i>{{ delivery.customer.phone }}</p>
+                                    <p><i class="fas fa-user me-2"></i>{{ delivery.customer.full_name }}</p>
+                                    <p><i class="fas fa-map-marker-alt me-2"></i>{{ delivery.address }}</p>
+                                    <p><i class="fas fa-phone me-2"></i>{{ delivery.customer.phone_number }}</p>
+                                    <p><i class="fas fa-calendar-alt me-2"></i>Delivery Date: {{ delivery.delivery_date|date:"M. j, Y" }}</p>
                                 </div>
                                 <div class="col-md-6">
                                     <form method="post" action="{% url 'update_delivery_status' delivery.id %}" class="mt-3">
                                         {% csrf_token %}
-                                        <select name="status" class="form-select mb-2">
-                                            <option value="in_progress">Mark In Progress</option>
-                                            <option value="completed">Mark Completed</option>
-                                        </select>
-                                        <button type="submit" class="action-button w-100">
-                                            <i class="fas fa-sync-alt me-2"></i>Update Status
+                                        <input type="hidden" name="status" value="{% if delivery.status == 'processing' %}shipped{% elif delivery.status == 'shipped' %}delivered{% endif %}">
+                                        <button type="submit" class="btn btn-primary w-100" {% if delivery.status == 'delivered' %}disabled{% endif %}>
+                                            <i class="fas fa-sync-alt me-2"></i>
+                                            {% if delivery.status == 'processing' %}
+                                                Mark as Shipped
+                                            {% elif delivery.status == 'shipped' %}
+                                                Mark as Delivered
+                                            {% else %}
+                                                Delivery Completed
+                                            {% endif %}
                                         </button>
                                     </form>
                                 </div>
@@ -228,7 +223,7 @@
                     {% endfor %}
                 {% else %}
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>No pending deliveries at the moment.
+                        <i class="fas fa-info-circle me-2"></i>No active deliveries at the moment.
                     </div>
                 {% endif %}
             </div>
@@ -237,14 +232,14 @@
             <div id="completed-deliveries" style="display: none;">
                 {% if completed_deliveries %}
                     {% for delivery in completed_deliveries %}
-                    <div class="delivery-card">
-                        <div class="delivery-header">
+                    <div class="delivery-card card mb-3">
+                        <div class="card-header">
                             <h5 class="mb-0">Delivery #{{ delivery.id }}</h5>
                         </div>
-                        <div class="delivery-body">
+                        <div class="card-body">
                             <p><i class="fas fa-car me-2"></i>{{ delivery.car.make }} {{ delivery.car.model }}</p>
-                            <p><i class="fas fa-user me-2"></i>{{ delivery.customer.name }}</p>
-                            <p><i class="fas fa-calendar-check me-2"></i>Completed: {{ delivery.completed_date }}</p>
+                            <p><i class="fas fa-user me-2"></i>{{ delivery.customer.full_name }}</p>
+                            <p><i class="fas fa-calendar-check me-2"></i>Completed: {{ delivery.delivery_date|date:"M. j, Y" }}</p>
                         </div>
                     </div>
                     {% endfor %}

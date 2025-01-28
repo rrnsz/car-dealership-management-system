@@ -192,18 +192,18 @@
         <div class="stats-container">
             <div class="stat-card">
                 <i class="fas fa-users stat-icon"></i>
-                <div class="stat-value">{{ staff_count|default:"0" }}</div>
-                <div class="stat-label">Total Staff Members</div>
+                <div class="stat-value">{{ total_staff }}</div>
+                <div class="stat-label">Total Staff</div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-car stat-icon"></i>
-                <div class="stat-value">{{ cars_count|default:"0" }}</div>
+                <div class="stat-value">{{ total_cars }}</div>
                 <div class="stat-label">Available Cars</div>
             </div>
             <div class="stat-card">
                 <i class="fas fa-user-tie stat-icon"></i>
-                <div class="stat-value">{{ drivers_count|default:"0" }}</div>
-                <div class="stat-label">Active Drivers</div>
+                <div class="stat-value">{{ total_drivers }}</div>
+                <div class="stat-label">Total Drivers</div>
             </div>
         </div>
 

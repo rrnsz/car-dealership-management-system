@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Orders</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .form-select, .form-control {
+            width: 100%;
+        }
+        .btn-primary {
+            width: 100%;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .action-card {
+            text-decoration: none;
+            color: inherit;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.2s;
+            background-color: #fff;
+        }
+        .action-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+        .action-content h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        .action-content p {
+            margin: 0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Car Dealership</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'staff_dashboard' %}">Dashboard</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="mb-4">Pending Orders</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Order Date</th>
+                        <th>Customer Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Payment Method</th>
+                        <th>Address</th>
+                        <th>Car Details</th>
+                        <th>Driver</th>
+                        <th>Delivery Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in pending_orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.order_date }}</td>
+                        <td>{{ order.customer.full_name }}</td>
+                        <td>{{ order.customer.user.email }}</td>
+                        <td>{{ order.customer.phone_number }}</td>
+                        <td>{{ order.payment_method }}</td>
+                        <td>{{ order.address }}</td>
+                        <td>{{ order.car.make }} {{ order.car.model }}</td>
+                        <td>
+                            <form method="POST" action="{% url 'pending_orders' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="order_id" value="{{ order.id }}">
+                                <select class="form-select" name="driver" required>
+                                    <option value="">Select Driver</option>
+                                    {% for driver in drivers %}
+                                    <option value="{{ driver.user_id }}">{{ driver.full_name }}</option>
+                                    {% endfor %}
+                                </select>
+                        </td>
+                        <td>
+                            <input type="date" class="form-control delivery-date" name="delivery_date" min="{{ timezone.now|date:'Y-m-d' }}" required>
+                        </td>
+                        <td>
+                            <button type="submit" class="btn btn-primary">Confirm Order</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var today = new Date();
+            today.setDate(today.getDate() + 1);
+            var tomorrow = today.toISOString().split('T')[0];
+
+            //var today = new Date().toISOString().split('T')[0];
+            var dateInputs = document.querySelectorAll('.delivery-date');
+            dateInputs.forEach(function(input) {
+                input.setAttribute('min', tomorrow);
+            });
+        });
+    </script>
+
+</body>
+</html>
