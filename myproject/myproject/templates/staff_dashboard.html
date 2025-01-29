@@ -5,216 +5,257 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Dashboard - Luxury Auto Gallery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/staff.css' %}">
     <style>
         :root {
-            --primary: #111827;
-            --secondary: #1f2937;
-            --accent: #3b82f6;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --light: #f3f4f6;
-            --text: #9ca3af;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            --primary: #3B82F6;
+            --secondary: #1E293B;
+            --accent: #F59E0B;
+            --background: #0F172A;
+            --surface: #1E293B;
+            --text: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
         }
 
         body {
-            font-family: 'Outfit', sans-serif;
-            background: var(--primary);
-            color: var(--light);
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            margin: 0;
             min-height: 100vh;
         }
 
-        /* Top Navigation */
-        .top-nav {
-            background: var(--secondary);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
         }
 
-        .nav-brand {
+        /* Sidebar Styles */
+        .sidebar {
+            background: var(--surface);
+            padding: 2rem;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .brand {
             display: flex;
             align-items: center;
             gap: 1rem;
+            margin-bottom: 3rem;
+            padding: 0.5rem;
         }
 
         .brand-logo {
             width: 40px;
             height: 40px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 6px rgba(54, 153, 255, 0.2));
+            transition: all 0.3s ease;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
+        .brand-logo:hover {
+            transform: rotate(45deg) scale(1.1);
+            filter: drop-shadow(0 6px 8px rgba(54, 153, 255, 0.3));
+        }
+
+        .brand h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes enginePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .brand:hover .brand-logo {
+            animation: enginePulse 1s infinite;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
         }
 
         .nav-link {
-            color: var(--text);
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 1rem;
+            padding: 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
 
         .nav-link:hover, .nav-link.active {
-            color: var(--light);
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
         }
 
-        .logout-btn {
-            background: var(--accent);
-            color: var(--light);
-            padding: 0.5rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .logout-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-
-        /* Main Content */
+        /* Main Content Styles */
         .main-content {
-            padding: 7rem 2rem 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
+            padding: 2rem;
         }
 
-        .welcome-section {
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 3rem;
-            text-align: center;
         }
 
-        .welcome-title {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, var(--accent), #60a5fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .welcome-text h1 {
+            font-size: 2rem;
+            margin: 0;
+            color: #3699ff;
+        }
+
+        .welcome-text span {
+            color: #F59E0B;
+        }
+
+        .welcome-text p {
+            color: #94A3B8;
+            margin: 0.5rem 0 0;
         }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
             margin-bottom: 3rem;
         }
 
         .stat-card {
-            background: var(--secondary);
-            padding: 2rem;
+            background: var(--surface);
+            padding: 1.5rem;
             border-radius: 16px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
             transition: transform 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--accent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
         }
 
-        .stat-card:hover::before {
-            opacity: 1;
-        }
-
         .stat-icon {
-            font-size: 2.5rem;
-            color: var(--accent);
-            margin-bottom: 1rem;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 12px;
+            color: var(--primary);
+            font-size: 1.5rem;
         }
 
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
+        .stat-info h3 {
+            font-size: 1.5rem;
+            margin: 0;
         }
 
-        .stat-label {
-            color: var(--text);
-            font-size: 1rem;
+        .stat-info p {
+            color: var(--text-secondary);
+            margin: 0.25rem 0 0;
+            font-size: 0.875rem;
         }
 
         .actions-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
         }
 
         .action-card {
-            background: var(--secondary);
-            padding: 2rem;
+            background: var(--surface);
+            padding: 1.5rem;
             border-radius: 16px;
             text-decoration: none;
-            color: var(--light);
+            color: var(--text);
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .action-card:hover {
             transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--primary);
         }
 
         .action-icon {
-            font-size: 2rem;
-            color: var(--accent);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: rgba(59, 130, 246, 0.1);
-            padding: 1rem;
             border-radius: 12px;
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .action-content h3 {
+            margin: 0 0 0.5rem;
             font-size: 1.25rem;
-            margin-bottom: 0.5rem;
         }
 
         .action-content p {
-            color: var(--text);
-            font-size: 0.9rem;
-            line-height: 1.5;
+            color: var(--text-secondary);
+            margin: 0;
+            font-size: 0.875rem;
+        }
+
+        .logout-btn {
+            position: fixed;
+            bottom: 2rem;
+            left: 1.5rem;
+            width: auto;
+            padding: 0.75rem 1.5rem;
+            background: #EF4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
         }
 
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
+            .dashboard-layout {
+                grid-template-columns: 1fr;
             }
 
-            .welcome-title {
-                font-size: 2rem;
+            .sidebar {
+                display: none;
             }
 
             .stats-grid {
@@ -228,84 +269,129 @@
     </style>
 </head>
 <body>
-    <nav class="top-nav">
-        <div class="nav-brand">
-            <img src="https://i.imgur.com/YPFtPGF.png" alt="Logo" class="brand-logo">
-            <h1>Luxury Auto</h1>
-        </div>
-        <div class="nav-links">
-            <a href="#" class="nav-link active">
-                <i class="fas fa-home"></i>
-                Dashboard
-            </a>
-            <a href="{% url 'manage_cars' %}" class="nav-link">
-                <i class="fas fa-car"></i>
-                Inventory
-            </a>
-            <a href="{% url 'pending_orders' %}" class="nav-link">
-                <i class="fas fa-clock"></i>
-                Pending Orders
-            </a>
-            <a href="{% url 'orders_history' %}" class="nav-link">
-                <i class="fas fa-history"></i>
-                Order Records
-            </a>
-        </div>
-        <a href="{% url 'logout' %}" class="logout-btn">
-            <i class="fas fa-sign-out-alt"></i>
-            Logout
-        </a>
-    </nav>
-
-    <main class="main-content">
-        <div class="welcome-section">
-            <h1 class="welcome-title">Welcome back, {{ request.user.get_full_name }}</h1>
-            <p>Your luxury auto management dashboard</p>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <i class="fas fa-car stat-icon"></i>
-                <div class="stat-value">{{ inventory_count }}</div>
-                <div class="stat-label">Available Cars</div>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <img src="{% static 'images/gearLogo21.png' %}" alt="Luxury Auto Logo" class="brand-logo">
+                <h1>Luxury Auto</h1>
             </div>
-            <div class="stat-card">
-                <i class="fas fa-chart-line stat-icon"></i>
-                <div class="stat-value">{{ total_orders }}</div>
-                <div class="stat-label">Total Orders</div>
-            </div>
-            <div class="stat-card">
-                <i class="fas fa-users stat-icon"></i>
-                <div class="stat-value">{{ total_drivers }}</div>
-                <div class="stat-label">Total Drivers</div>
-            </div>
-        </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active">
+                            <i class="fas fa-home"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'manage_cars' %}" class="nav-link">
+                            <i class="fas fa-car"></i>
+                            Inventory
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'pending_orders' %}" class="nav-link">
+                            <i class="fas fa-clock"></i>
+                            Pending Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'orders_history' %}" class="nav-link">
+                            <i class="fas fa-history"></i>
+                            Order Records
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'received_messages' %}" class="nav-link">
+                            <i class="fas fa-envelope"></i>
+                            Messages
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <a href="{% url 'logout' %}" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </aside>
 
-        <div class="actions-grid">
-            <a href="{% url 'manage_cars' %}" class="action-card">
-                <i class="fas fa-car action-icon"></i>
-                <div class="action-content">
-                    <h3>Manage Inventory</h3>
-                    <p>Add, update, or remove vehicles from inventory</p>
+        <main class="main-content">
+            <div class="header">
+                <div class="welcome-text">
+                    <h1>Welcome back, {{ request.user.get_full_name }}</h1>
+                    <p>Your luxury auto management dashboard</p>
                 </div>
-            </a>
-            <a href="{% url 'pending_orders' %}" class="action-card">
-                    <i class="fas fa-car action-icon"></i>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>{{ inventory_count }}</h3>
+                        <p>Available Cars</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>{{ total_orders }}</h3>
+                        <p>Total Orders</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>{{ total_drivers }}</h3>
+                        <p>Total Drivers</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions-grid">
+                <a href="{% url 'manage_cars' %}" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Manage Inventory</h3>
+                        <p>Add, update, or remove vehicles from inventory</p>
+                    </div>
+                </a>
+                <a href="{% url 'pending_orders' %}" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
                     <div class="action-content">
                         <h3>Pending Orders</h3>
                         <p>Manage pending Orders</p>
                     </div>
-            </a>
-            <a href="{% url 'orders_history' %}" class="action-card">
-                <i class="fas fa-file-contract action-icon"></i>
-                <div class="action-content">
-                    <h3>Order Records</h3>
-                    <p>Orders history</p>
-                </div>
-            </a>
-        </div>
-    </main>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+                </a>
+                <a href="{% url 'orders_history' %}" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Order Records</h3>
+                        <p>Orders history</p>
+                    </div>
+                </a>
+                <a href="{% url 'received_messages' %}" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Received Messages</h3>
+                        <p>View customer inquiries and messages</p>
+                    </div>
+                </a>
+            </div>
+        </main>
+    </div>
 </body>
 </html>

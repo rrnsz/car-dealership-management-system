@@ -42,7 +42,9 @@ urlpatterns = [
     path('create-order/<int:car_id>/', views.create_order, name='create_order'),
     path('vehicles/', views.vehicles_view, name='vehicles'),
     path('my-orders/', views.user_orders, name='user_orders'),
-
+    path('contact/submit/', views.contact_submit, name='contact_submit'),
+    path('staff/messages/', views.received_messages, name='received_messages'),
+    path('staff/messages/delete/<int:message_id>/', views.delete_message, name='delete_message'),
 ]
 
 if settings.DEBUG:

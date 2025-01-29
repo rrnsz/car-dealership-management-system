@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import User, Customer, Staff, Driver, Car, Order
+from .models import User, Customer, Staff, Driver, Car, Order, ContactMessage
 from .forms import StaffForm, DriverForm, CarForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum
@@ -475,3 +475,36 @@ def user_orders(request):
     else:
         messages.error(request, "Access denied.")
         return redirect('index')
+
+
+def contact_submit(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        
+        # Create new message in database
+        ContactMessage.objects.create(
+            name=name,
+            email=email,
+            subject=subject,
+            message=message
+        )
+        
+        # Add success message
+        messages.success(request, 'Message sent successfully!')
+        return redirect('contact')
+    return redirect('contact')
+
+@login_required
+def received_messages(request):
+    messages = ContactMessage.objects.all().order_by('-created_at')
+    return render(request, 'received_messages.html', {'messages': messages})
+
+def delete_message(request, message_id):
+    if request.method == 'POST':
+        message = get_object_or_404(ContactMessage, id=message_id)
+        message.delete()
+        messages.success(request, 'Message deleted successfully!')
+    return redirect('received_messages')

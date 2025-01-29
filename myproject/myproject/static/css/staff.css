@@ -315,3 +315,38 @@ body {
         gap: 0.5rem; 
     }
 }
+
+/* Add these to your existing CSS */
+.action-card {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.action-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.action-card:hover .icon-wrapper {
+    transform: scale(1.1);
+    background: rgba(64, 172, 241, 0.2) !important;
+}
+
+.content h3 {
+    transition: color 0.3s ease;
+}
+
+.action-card:hover .content h3 {
+    color: var(--primary-color) !important;
+}
