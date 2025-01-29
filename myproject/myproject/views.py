@@ -283,24 +283,35 @@ def orders_history(request):
 def pending_orders(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
-        driver_user_id = request.POST.get('driver')
-        delivery_date = request.POST.get('delivery_date')
+        action = request.POST.get('action')
+        order = Order.objects.get(id=order_id)
+
+        if action == 'confirm':
+            driver_id = request.POST.get('driver')
+            delivery_date = request.POST.get('delivery_date')
+            
+            # Process confirmation logic
+            order.driver_id = driver_id
+            order.delivery_date = delivery_date
+            order.status = 'confirmed'
+            order.save()
+            
+            messages.success(request, f'Order #{order_id} has been confirmed.')
         
-        order = get_object_or_404(Order, id=order_id)
-        driver = get_object_or_404(Driver, user_id=driver_user_id)
-        
-        order.update_status('processing', 
-                          staff=request.user.staff,
-                          driver=driver,
-                          delivery_date=delivery_date)
-        
+        elif action == 'cancel':
+            # Process cancellation logic
+            order.status = 'cancelled'
+            order.save()
+            
+            messages.warning(request, f'Order #{order_id} has been cancelled.')
+
         return redirect('pending_orders')
+
     pending_orders = Order.objects.filter(status='pending')
     drivers = Driver.objects.all()
-
     return render(request, 'pending_orders.html', {
         'pending_orders': pending_orders,
-        'drivers': drivers,
+        'drivers': drivers
     })
 
 def manage_cars(request):
