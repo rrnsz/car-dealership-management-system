@@ -103,33 +103,42 @@
                     </div>
 
                     <div class="col-lg-8">
-                        <div class="contact-form">
-                            <h3>Send Us a Message</h3>
-                            <form id="contactForm" method="POST" action="{% url 'contact_submit' %}">
+                        <div class="message-form-container">
+                            <h2>Send Us a Message</h2>
+
+                            <!-- Success Modal -->
+                            <div id="successModal" class="modal">
+                                <div class="modal-content">
+                                    <h3>Thank You!</h3>
+                                    <p>Your message has been sent successfully. We will be in touch soon.</p>
+                                    <button onclick="closeModal()" class="close-btn">Close</button>
+                                </div>
+                            </div>
+
+                            <form method="POST" action="{% url 'contact_submit' %}" id="contactForm">
                                 {% csrf_token %}
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Your Name</label>
-                                            <input type="text" name="name" class="form-control" required>
-                                        </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Your Name</label>
+                                        <input type="text" name="name" required>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Your Email</label>
-                                            <input type="email" name="email" class="form-control" required>
-                                        </div>
+                                    <div class="form-group">
+                                        <label>Your Email</label>
+                                        <input type="email" name="email" required>
                                     </div>
                                 </div>
+                                
                                 <div class="form-group">
                                     <label>Subject</label>
-                                    <input type="text" name="subject" class="form-control" required>
+                                    <input type="text" name="subject" required>
                                 </div>
+                                
                                 <div class="form-group">
                                     <label>Your Message</label>
-                                    <textarea name="message" class="form-control" rows="5" required></textarea>
+                                    <textarea name="message" rows="6" required></textarea>
                                 </div>
-                                <button type="submit" class="btn-submit">Send Message</button>
+                                
+                                <button type="submit" class="send-message-btn">Send Message</button>
                             </form>
                         </div>
                     </div>
@@ -222,7 +231,7 @@
         }
 
         .contact-info h3,
-        .contact-form h3 {
+        .message-form-container h2 {
             font-size: 1.8rem;
             font-weight: 600;
             margin-bottom: 1.5rem;
@@ -283,48 +292,65 @@
         }
 
         /* Form Styles */
-        .contact-form {
-            background: var(--light);
+        .message-form-container {
+            max-width: 800px;
+            margin: 0 auto;
             padding: 2rem;
-            border-radius: 15px;
+        }
+
+        .message-form-container h2 {
+            font-size: 2rem;
+            color: #1a1a1a;
+            margin-bottom: 2rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
 
         .form-group {
+            flex: 1;
             margin-bottom: 1.5rem;
         }
 
         .form-group label {
             display: block;
+            font-size: 1rem;
+            color: #1a1a1a;
             margin-bottom: 0.5rem;
-            font-weight: 500;
         }
 
-        .form-control {
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 0.8rem 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(255,77,77,0.1);
-        }
-
-        .btn-submit {
-            background: var(--accent);
-            color: var(--light);
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-weight: 500;
-            transition: all 0.3s ease;
+        .form-group input,
+        .form-group textarea {
             width: 100%;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #fff;
         }
 
-        .btn-submit:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(255,77,77,0.2);
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .send-message-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .send-message-btn:hover {
+            background: #ff3333;
         }
 
         /* Map Section */
@@ -350,6 +376,74 @@
                 padding: 2rem;
             }
         }
+
+        @media (max-width: 640px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+
+        /* Updated Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 12px;
+            text-align: center;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-content h3 {
+            font-size: 1.75rem;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .close-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #ff3333;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
     </style>
 
     <!-- jQuery first -->
@@ -371,6 +465,43 @@
                 document.querySelector('.navbar').style.background = 'rgba(0, 0, 0, 0.8)';
             }
         });
+
+        // Form submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            
+            // Send form data using fetch
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success modal
+                    document.getElementById('successModal').style.display = 'block';
+                    // Clear form
+                    this.reset();
+                }
+            });
+        });
+
+        function closeModal() {
+            document.getElementById('successModal').style.display = 'none';
+        }
+
+        // Only close modal when clicking the close button
+        window.onclick = function(event) {
+            if (event.target.className === 'close-btn') {
+                document.getElementById('successModal').style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

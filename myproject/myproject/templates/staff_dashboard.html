@@ -46,22 +46,8 @@
         .brand {
             display: flex;
             align-items: center;
-            gap: 1rem;
             margin-bottom: 3rem;
             padding: 0.5rem;
-        }
-
-        .brand-logo {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            filter: drop-shadow(0 4px 6px rgba(54, 153, 255, 0.2));
-            transition: all 0.3s ease;
-        }
-
-        .brand-logo:hover {
-            transform: rotate(45deg) scale(1.1);
-            filter: drop-shadow(0 6px 8px rgba(54, 153, 255, 0.3));
         }
 
         .brand h1 {
@@ -72,16 +58,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: 0.5px;
-        }
-
-        @keyframes enginePulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .brand:hover .brand-logo {
-            animation: enginePulse 1s infinite;
         }
 
         .nav-menu {
@@ -272,7 +248,6 @@
     <div class="dashboard-layout">
         <aside class="sidebar">
             <div class="brand">
-                <img src="{% static 'images/gearLogo21.png' %}" alt="Luxury Auto Logo" class="brand-logo">
                 <h1>Luxury Auto</h1>
             </div>
             <nav>

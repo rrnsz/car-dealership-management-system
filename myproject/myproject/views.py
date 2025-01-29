@@ -484,7 +484,7 @@ def contact_submit(request):
         subject = request.POST.get('subject')
         message = request.POST.get('message')
         
-        # Create new message in database
+        # Save the message to database
         ContactMessage.objects.create(
             name=name,
             email=email,
@@ -492,10 +492,13 @@ def contact_submit(request):
             message=message
         )
         
-        # Add success message
-        messages.success(request, 'Message sent successfully!')
-        return redirect('contact')
-    return redirect('contact')
+        # Return JSON response
+        return JsonResponse({
+            'success': True,
+            'message': 'Message sent successfully!'
+        })
+    
+    return JsonResponse({'success': False}, status=400)
 
 @login_required
 def received_messages(request):
