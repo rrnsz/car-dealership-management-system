@@ -65,8 +65,8 @@
             border-radius: 20px;
             overflow: hidden;
             margin-bottom: 2rem;
-            touch-action: none; /* Disable browser touch handling */
-            -webkit-user-select: none; /* Prevent text selection */
+            touch-action: none; 
+            -webkit-user-select: none; 
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
@@ -78,7 +78,7 @@
             object-fit: cover;
             border-radius: 20px;
             transition: transform 0.3s ease-out;
-            pointer-events: none; /* Prevent image drag */
+            pointer-events: none; 
             -webkit-user-drag: none;
         }
 
@@ -277,7 +277,7 @@
             }
         }
 
-        /* Modal Styles */
+        
         .modal {
             display: none;
             position: fixed;
@@ -708,7 +708,7 @@
             const mainImage = document.getElementById('mainCarImage');
             mainImage.src = images[index];
             
-            // Update thumbnails
+           
             document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
                 thumb.classList.toggle('active', i === index);
             });
@@ -732,7 +732,7 @@
             touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
             isSwiping = true;
-            e.preventDefault(); // Prevent default touch behavior
+            e.preventDefault(); 
         }, { passive: false });
 
         imageContainer.addEventListener('touchmove', function(e) {
@@ -744,11 +744,11 @@
             // Calculate vertical scroll
             const verticalScroll = Math.abs(touchEndY - touchStartY);
             
-            // If scrolling more vertical than horizontal, stop swipe
+            
             if (verticalScroll > Math.abs(touchEndX - touchStartX)) {
                 isSwiping = false;
             } else {
-                e.preventDefault(); // Prevent scrolling when swiping horizontally
+                e.preventDefault(); 
             }
         }, { passive: false });
 
@@ -796,7 +796,7 @@
             }
         }
 
-        // Prevent modal from closing when clicking inside the modal content
+        
         document.querySelector('.modal-content').onclick = function(event) {
             event.stopPropagation();
         }
@@ -807,7 +807,7 @@
 
         function closeSuccessModal() {
             document.getElementById('successModal').style.display = 'none';
-            window.location.href = "{% url 'index' %}"; // Redirect to home page
+            window.location.href = "{% url 'index' %}"; 
         }
 
         // Modify your form submission

@@ -176,7 +176,7 @@
             background: var(--light);
         }
 
-        /* Navbar Styles */
+        
         .navbar {
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
@@ -189,7 +189,7 @@
             color: var(--light);
         }
 
-        /* Hero Section */
+        
         .contact-hero {
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
                         url('{% static "img/Bugatti.jpeg" %}') center/cover no-repeat;
@@ -211,7 +211,7 @@
             opacity: 0.9;
         }
 
-        /* Contact Main Section */
+       
         .contact-main {
             padding: 5rem 0;
             background: var(--gray);
@@ -291,7 +291,7 @@
             transform: translateY(-3px);
         }
 
-        /* Form Styles */
+       
         .message-form-container {
             max-width: 800px;
             margin: 0 auto;
@@ -384,7 +384,7 @@
             }
         }
 
-        /* Updated Modal Styles */
+        
         .modal {
             display: none;
             position: fixed;
@@ -446,16 +446,16 @@
         }
     </style>
 
-    <!-- jQuery first -->
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-    <!-- Bootstrap JS -->
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Font Awesome -->
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
     
-    <!-- Your custom scripts -->
+   
     <script>
         // Navbar background on scroll
         window.addEventListener('scroll', function() {
@@ -470,10 +470,10 @@
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Get form data
+            
             const formData = new FormData(this);
             
-            // Send form data using fetch
+           
             fetch(this.action, {
                 method: 'POST',
                 body: formData,
@@ -484,7 +484,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Show success modal
+                    
                     document.getElementById('successModal').style.display = 'block';
                     // Clear form
                     this.reset();
@@ -496,7 +496,7 @@
             document.getElementById('successModal').style.display = 'none';
         }
 
-        // Only close modal when clicking the close button
+        
         window.onclick = function(event) {
             if (event.target.className === 'close-btn') {
                 document.getElementById('successModal').style.display = 'none';

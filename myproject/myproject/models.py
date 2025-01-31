@@ -6,7 +6,7 @@ from django.dispatch import receiver
 from abc import ABC, abstractmethod
 
 
-# Add this at the top after your imports
+
 class SingletonMeta(type):
     _instances = {}
     
@@ -117,7 +117,7 @@ class Car(models.Model):
     
 
     
-# Add these strategy classes after your imports
+
 class OrderStatusStrategy(ABC):
     @abstractmethod
     def handle_status_change(self, order):
@@ -234,7 +234,7 @@ class Order(models.Model):
             self.save()
         return self
 
-# Initialize observers
+
 Order.add_observer(StockObserver())
 Order.add_observer(NotificationObserver())
 

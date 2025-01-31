@@ -93,7 +93,7 @@
             box-shadow: 0 4px 12px rgba(42,82,152,0.2);
         }
 
-        /* Custom styles for specific elements */
+        
         .customer-name {
             font-weight: 500;
             color: #2a5298;
@@ -111,7 +111,7 @@
             font-size: 0.9rem;
         }
 
-        /* Responsive adjustments */
+        
         @media (max-width: 768px) {
             .container {
                 padding: 0 15px;
@@ -249,7 +249,7 @@
             today.setDate(today.getDate() + 1);
             var tomorrow = today.toISOString().split('T')[0];
 
-            //var today = new Date().toISOString().split('T')[0];
+            
             var dateInputs = document.querySelectorAll('.delivery-date');
             dateInputs.forEach(function(input) {
                 input.setAttribute('min', tomorrow);

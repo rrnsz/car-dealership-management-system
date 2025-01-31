@@ -23,13 +23,13 @@ def create_order(request, car_id):
                 payment_method=request.POST.get('paymentMethod'),
                 status='pending'
             )
-            # If it's an AJAX request, return JSON response
+            
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'status': 'success',
                     'message': 'Order created successfully'
                 })
-            # For regular form submission, redirect to index
+            
             return redirect('index')
         except Exception as e:
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -108,7 +108,7 @@ def logout_view(request):
 
 # Admin Dashboard Views ------------------------------------------------------------------------------------------
 def admin_dashboard(request):
-    total_cars = Car.objects.count()  # Changed from Sum('stock') to count()
+    total_cars = Car.objects.count()  
     total_staff = Staff.objects.count()
     total_drivers = Driver.objects.count()
 
@@ -165,7 +165,7 @@ def edit_staff(request, staff_id):
     if request.method == "POST":
         form = StaffForm(request.POST, instance=staff)
         if form.is_valid():
-            form.save()  # This will save both User and Staff models
+            form.save()  
             messages.success(request, "Staff member updated successfully!")
             return redirect("manage_staff")
     else:
@@ -259,7 +259,7 @@ def delete_driver(request, driver_id):
 
 # Staff ------------------------------------------------------------------------------------------
 def staff_dashboard(request):
-    total_cars = Car.objects.count()  # Count unique car models instead of total stock
+    total_cars = Car.objects.count()  
     total_orders = Order.objects.count()
     total_drivers = Driver.objects.count()
 
@@ -291,7 +291,7 @@ def pending_orders(request):
             driver_id = request.POST.get('driver')
             delivery_date = request.POST.get('delivery_date')
             
-            # Get the staff member (current user) and driver
+            
             staff = request.user.staff
             driver = Driver.objects.get(user_id=driver_id)
             
@@ -353,16 +353,16 @@ def edit_car(request, car_id):
         form = CarForm(request.POST, request.FILES, instance=car)
         if form.is_valid():
             try:
-                # Save the car details
+                
                 car = form.save()
                 
                 # Handle new images if they exist
                 new_images = request.FILES.getlist('images')
                 if new_images:
-                    # Delete all existing images
+                   
                     CarImage.objects.filter(car=car).delete()
                     
-                    # Create new image records
+                    
                     for image in new_images:
                         CarImage.objects.create(car=car, image=image)
                 
@@ -430,7 +430,7 @@ def filter_cars(request):
     else:
         cars = Car.objects.filter(stock__gt=0)
 
-    # Render only the car section as HTML
+    
     return render(request, 'partials/car_list.html', {'cars': cars})
 
 #  ------------------------------------------------------------------------------------------
@@ -459,8 +459,7 @@ def car_detail_view(request, car_id):
 
 def submit_inquiry(request, car_id):
     if request.method == 'POST':
-        # Here you can add code to handle the form submission
-        # For example, sending an email or saving to database
+        
         messages.success(request, 'Your inquiry has been sent successfully!')
         return redirect('car_detail', car_id=car_id)
 
@@ -481,7 +480,7 @@ def vehicles_view(request):
 @login_required
 def user_orders(request):
     if request.user.role == 'customer':
-        # Get all non-delivered and non-cancelled orders
+        
         active_orders = Order.objects.filter(
             customer=request.user.customer,
             status__in=['pending', 'processing', 'shipped']
@@ -489,7 +488,7 @@ def user_orders(request):
             status='cancelled'
         ).order_by('-order_date')
         
-        # Get completed (delivered) orders for history
+        
         delivered_orders = Order.objects.filter(
             customer=request.user.customer,
             status='delivered'
@@ -521,7 +520,7 @@ def contact_submit(request):
             message=message
         )
         
-        # Return JSON response
+        
         return JsonResponse({
             'success': True,
             'message': 'Message sent successfully!'

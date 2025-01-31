@@ -17,7 +17,6 @@
             --primary: #1a1a1a;
             --secondary: #2d2d2d;
             --accent: #c8a365;
-            /* Luxury gold accent */
             --light: #ffffff;
             --gray: #f8f9fa;
             --dark-gray: #4a4a4a;
@@ -33,7 +32,6 @@
             background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
             url('{% static "img/Bugatti.jpeg" %}') center/cover fixed;
             height: 500px;
-            /* Increased height */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -46,13 +44,11 @@
             text-align: center;
             z-index: 2;
             max-width: 1000px;
-            /* Increased width */
             padding: 0 20px;
         }
 
         .header-title {
             font-size: 4rem;
-            /* Larger title */
             font-family: 'Playfair Display', serif;
             font-weight: 700;
             margin-bottom: 2rem;
@@ -85,7 +81,6 @@
             background: transparent;
             border: 2px solid var(--accent);
             border-radius: 30px;
-            /* Rounded buttons */
             padding: 12px 24px;
             font-size: 15px;
             font-weight: 600;
@@ -139,7 +134,7 @@
             position: relative;
             overflow: hidden;
             height: 300px;
-            /* Taller images */
+            
         }
 
         .car-image {
@@ -296,7 +291,7 @@
             color: #666 !important;
         }
 
-        /* Push navigation items to the right */
+       
         .navbar-nav {
             margin-left: auto;
         }
@@ -338,7 +333,7 @@
             margin-left: 10%;
         }
 
-        /* Search and filters */
+        
         .search-container {
             background: white;
             padding: 2rem 10%;
@@ -395,7 +390,7 @@
             font-size: 0.9rem;
         }
 
-        /* Vehicle cards */
+        
         .vehicles-grid {
             background: #f8fafc;
             padding: 2rem 10%;
@@ -516,7 +511,7 @@
 </head>
 
 <body>
-    <!-- Updated Navbar HTML -->
+   
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'index' %}">
@@ -607,12 +602,12 @@
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script>
         function filterCars(category) {
-            // Remove active class from all buttons
+            
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
 
-            // Add active class to clicked button
+            
             event.target.classList.add('active');
 
             fetch(`/filter-cars/?category=${category}`)
@@ -624,22 +619,22 @@
         }
 
         function filterCars(category, event) {
-            // Remove active class from all buttons
+            
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
 
-            // Add active class to clicked button
+            
             if (event) {
                 event.target.classList.add('active');
             }
 
-            // Update URL with the selected category
+            
             const url = new URL(window.location);
             url.searchParams.set('category', category);
             window.history.pushState({}, '', url);
 
-            // Reload the page with the new category
+            
             window.location.href = url;
         }
 
