@@ -280,6 +280,7 @@ def orders_history(request):
     })
 
 
+@login_required
 def pending_orders(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
@@ -290,19 +291,22 @@ def pending_orders(request):
             driver_id = request.POST.get('driver')
             delivery_date = request.POST.get('delivery_date')
             
-            # Process confirmation logic
-            order.driver_id = driver_id
+            # Get the staff member (current user) and driver
+            staff = request.user.staff
+            driver = Driver.objects.get(user_id=driver_id)
+            
+            # Update order details
+            order.staff = staff
+            order.driver = driver
             order.delivery_date = delivery_date
-            order.status = 'confirmed'
+            order.status = 'processing'
             order.save()
             
-            messages.success(request, f'Order #{order_id} has been confirmed.')
+            messages.success(request, f'Order #{order_id} has been confirmed and assigned to {driver.full_name}.')
         
         elif action == 'cancel':
-            # Process cancellation logic
             order.status = 'cancelled'
             order.save()
-            
             messages.warning(request, f'Order #{order_id} has been cancelled.')
 
         return redirect('pending_orders')
@@ -364,40 +368,15 @@ def edit_car(request, car_id):
     else:
         form = CarForm(instance=car)
     return render(request, "edit_car.html", {"form": form, "car": car})
-    
-
-# Driver ------------------------------------------------------------------------------------------
-
-
-def driver_dashboard(request):
-    driver = Driver.objects.get(user=request.user)
-    
-    orders = Order.objects.filter(driver=driver)
-    
-    active_deliveries = orders.exclude(status='delivered')
-    completed_deliveries = orders.filter(status='delivered')
-    
-    context = {
-        'driver': driver,
-        'active_deliveries': active_deliveries,
-        'completed_deliveries': completed_deliveries,
-        'in_progress_count': active_deliveries.filter(Q(status='processing') | Q(status='shipped')).count(),
-        'completed_count': completed_deliveries.count(),
-    }
-    
-    return render(request, "driver_dashboard.html", context)
-
-
 
 def update_delivery_status(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
     if request.method == 'POST':
-        new_status = request.POST.get('status')
-        order.update_status(new_status)
+        order = get_object_or_404(Order, id=order_id)
+        order.status = 'delivered'
+        order.save()
     return redirect('driver_dashboard')
 
 #  ------------------------------------------------------------------------------------------
-
 
 def index(request):
     category = request.GET.get('category', None)
@@ -478,13 +457,15 @@ def vehicles_view(request):
 @login_required
 def user_orders(request):
     if request.user.role == 'customer':
-        # Get active orders (not delivered)
+        # Get all non-delivered and non-cancelled orders
         active_orders = Order.objects.filter(
             customer=request.user.customer,
             status__in=['pending', 'processing', 'shipped']
+        ).exclude(
+            status='cancelled'
         ).order_by('-order_date')
         
-        # Get delivered orders (history)
+        # Get completed (delivered) orders for history
         delivered_orders = Order.objects.filter(
             customer=request.user.customer,
             status='delivered'
@@ -578,3 +559,23 @@ def delete_car_image(request, image_id):
     image.delete()
     messages.success(request, "Image deleted successfully!")
     return redirect('edit_car', car_id=car_id)
+
+# Driver ------------------------------------------------------------------------------------------
+
+def driver_dashboard(request):
+    driver = Driver.objects.get(user=request.user)
+    
+    orders = Order.objects.filter(driver=driver)
+    
+    active_deliveries = orders.exclude(status='delivered')
+    completed_deliveries = orders.filter(status='delivered')
+    
+    context = {
+        'driver': driver,
+        'active_deliveries': active_deliveries,
+        'completed_deliveries': completed_deliveries,
+        'in_progress_count': active_deliveries.filter(Q(status='processing') | Q(status='shipped')).count(),
+        'completed_count': completed_deliveries.count(),
+    }
+    
+    return render(request, "driver_dashboard.html", context)

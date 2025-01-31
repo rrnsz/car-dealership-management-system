@@ -192,14 +192,14 @@
 
                                 <div class="detail-row">
                                     <i class="fas fa-info-circle"></i>
-                                    <strong>Status:</strong> &nbsp;
-                                    <span class="badge 
+                                    <span>Status: 
+                                        <span class="badge 
                                             {% if order.status == 'pending' %}bg-warning
-                                            {% elif order.status == 'processing' %}bg-info
-                                            {% elif order.status == 'shipped' %}bg-primary
-                                            {% elif order.status == 'delivered' %}bg-success
-                                            {% endif %}">
-                                        {{ order.status|title }}
+                                            {% elif order.status == 'processing' %}bg-primary
+                                            {% elif order.status == 'shipped' %}bg-info
+                                            {% else %}bg-success{% endif %}">
+                                            {{ order.status|title }}
+                                        </span>
                                     </span>
                                 </div>
 
@@ -274,14 +274,14 @@
 
                                     <div class="detail-row">
                                         <i class="fas fa-info-circle"></i>
-                                        <strong>Status:</strong> &nbsp;
-                                        <span class="badge 
+                                        <span>Status: 
+                                            <span class="badge 
                                                 {% if order.status == 'pending' %}bg-warning
-                                                {% elif order.status == 'processing' %}bg-info
-                                                {% elif order.status == 'shipped' %}bg-primary
-                                                {% elif order.status == 'delivered' %}bg-success
-                                                {% endif %}">
-                                            {{ order.status|title }}
+                                                {% elif order.status == 'processing' %}bg-primary
+                                                {% elif order.status == 'shipped' %}bg-info
+                                                {% else %}bg-success{% endif %}">
+                                                {{ order.status|title }}
+                                            </span>
                                         </span>
                                     </div>
 
