@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import User, Customer, Staff, Driver, Car, Order, ContactMessage
+from .models import User, Customer, Staff, Driver, Car, Order, ContactMessage, CarImage
 from .forms import StaffForm, DriverForm, CarForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Sum
@@ -314,33 +314,46 @@ def pending_orders(request):
         'drivers': drivers
     })
 
+@login_required
 def manage_cars(request):
-    cars = Car.objects.all()
+    cars = Car.objects.all().prefetch_related('images')
     return render(request, "manage_cars.html", {"cars": cars})
 
 
+@login_required
 def add_car(request):
-    if request.method == "POST":
-        form = CarForm(request.POST, request.FILES)
+    if request.method == 'POST':
+        form = CarForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, "Car added successfully!")
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': True})
-            return redirect("manage_cars")
-        else:
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': False, 'errors': form.errors})
+            car = form.save()
+            # Handle multiple images
+            images = request.FILES.getlist('images')
+            for image in images:
+                CarImage.objects.create(car=car, image=image)
+            messages.success(request, 'Car added successfully!')
+            return redirect('manage_cars')
     else:
         form = CarForm()
-    return render(request, "add_car.html", {"form": form})
+    return render(request, 'add_car.html', {'form': form})
+
+@login_required
+def delete_car(request, car_id):
+    car = get_object_or_404(Car, id=car_id)
+    car.delete()
+    messages.success(request, "Car deleted successfully!")
+    return redirect('manage_cars')
 
 def edit_car(request, car_id):
     car = get_object_or_404(Car, id=car_id)
     if request.method == "POST":
         form = CarForm(request.POST, request.FILES, instance=car)
         if form.is_valid():
-            form.save()
+            car = form.save()
+            images = request.FILES.getlist('images')
+            if images:
+                car.images.all().delete()  # Remove old images
+                for image in images:
+                    CarImage.objects.create(car=car, image=image)
             messages.success(request, "Car updated successfully!")
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({'success': True})
@@ -350,7 +363,7 @@ def edit_car(request, car_id):
                 return JsonResponse({'success': False, 'errors': form.errors})
     else:
         form = CarForm(instance=car)
-    return render(request, "edit_car.html", {"form": form})
+    return render(request, "edit_car.html", {"form": form, "car": car})
     
 
 # Driver ------------------------------------------------------------------------------------------
@@ -522,3 +535,46 @@ def delete_message(request, message_id):
         message.delete()
         messages.success(request, 'Message deleted successfully!')
     return redirect('received_messages')
+
+def add_car(request):
+    if request.method == "POST":
+        form = CarForm(request.POST, request.FILES)
+        if form.is_valid():
+            car = form.save()
+            images = request.FILES.getlist('images')
+            for image in images:
+                CarImage.objects.create(car=car, image=image)
+            messages.success(request, "Car added successfully!")
+            return redirect("manage_cars")
+    else:
+        form = CarForm()
+    return render(request, "add_car.html", {"form": form})
+
+def edit_car(request, car_id):
+    car = get_object_or_404(Car, id=car_id)
+    if request.method == "POST":
+        form = CarForm(request.POST, request.FILES, instance=car)
+        if form.is_valid():
+            car = form.save()
+            images = request.FILES.getlist('images')
+            if images:
+                car.images.all().delete()  # Remove old images
+                for image in images:
+                    CarImage.objects.create(car=car, image=image)
+            messages.success(request, "Car updated successfully!")
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': True})
+            return redirect("manage_cars")
+        else:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'errors': form.errors})
+    else:
+        form = CarForm(instance=car)
+    return render(request, "edit_car.html", {"form": form, "car": car})
+
+def delete_car_image(request, image_id):
+    image = get_object_or_404(CarImage, id=image_id)
+    car_id = image.car.id
+    image.delete()
+    messages.success(request, "Image deleted successfully!")
+    return redirect('edit_car', car_id=car_id)

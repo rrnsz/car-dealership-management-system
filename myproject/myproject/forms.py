@@ -50,11 +50,24 @@ class DriverForm(forms.ModelForm):
 
 
 class CarForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields['category'].choices = Car.CATEGORY_CHOICES
+    images = forms.ImageField(widget=forms.FileInput(), required=False)
 
     class Meta:
         model = Car
-        fields = ["make", "model", "category", "description", "price", "stock", "image", "type", "transmission", "gas"]
+        fields = [
+            'make', 'model', 'category', 'description', 'price', 'stock',
+            'type', 'transmission', 'gas', 'power', 'year'
+        ]
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+            'make': forms.TextInput(attrs={'class': 'form-control'}),
+            'model': forms.TextInput(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-select'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'stock': forms.NumberInput(attrs={'class': 'form-control'}),
+            'type': forms.TextInput(attrs={'class': 'form-control'}),
+            'transmission': forms.TextInput(attrs={'class': 'form-control'}),
+            'gas': forms.TextInput(attrs={'class': 'form-control'}),
+            'power': forms.TextInput(attrs={'class': 'form-control'}),
+            'year': forms.TextInput(attrs={'class': 'form-control'}),
+        }

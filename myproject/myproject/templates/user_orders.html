@@ -157,20 +157,20 @@
     <div class="container">
         <!-- Active Orders Section -->
         <h3 class="mb-4"><i class="fas fa-clock"></i> Active Orders</h3>
-        {% if active_orders %}
-            <div class="row">
-                {% for order in active_orders %}
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    {% if order.car.image %}
-                                        <img src="{{ order.car.image.url }}" class="img-fluid" alt="{{ order.car }}">
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-8 order-details">
-                                    <h4>{{ order.car.make }} {{ order.car.model }}</h4>
+{% if active_orders %}
+    <div class="row">
+        {% for order in active_orders %}
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            {% if order.car.images.all %}
+                                <img src="{{ order.car.images.first.image.url }}" class="img-fluid" alt="{{ order.car }}">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8 order-details">
+                            <h4>{{ order.car.make }} {{ order.car.model }}</h4>
                                     
                                     <div class="detail-row">
                                         <i class="far fa-calendar-alt"></i>

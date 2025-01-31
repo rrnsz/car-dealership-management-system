@@ -57,7 +57,9 @@ ROOT_URLCONF = 'myproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'myproject/templates'],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'myproject', 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,4 +139,3 @@ AUTHENTICATION_BACKENDS = [
 # Media files (uploaded files)
 MEDIA_URL = '/media/' 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
-

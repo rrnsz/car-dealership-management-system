@@ -35,7 +35,7 @@ urlpatterns = [
     path('manage-cars/', views.manage_cars, name='manage_cars'),
     path('add-car/', views.add_car, name='add_car'),
     path('edit-car/<int:car_id>/', views.edit_car, name='edit_car'),
-
+    path('delete-car/<int:car_id>/', views.delete_car, name='delete_car'),
     path('filter-cars/', views.filter_cars, name='filter_cars'),
     path('contact/', views.contact, name='contact'),
     path('car/<int:car_id>/', views.car_detail_view, name='car_detail'),
@@ -45,9 +45,9 @@ urlpatterns = [
     path('contact/submit/', views.contact_submit, name='contact_submit'),
     path('staff/messages/', views.received_messages, name='received_messages'),
     path('staff/messages/delete/<int:message_id>/', views.delete_message, name='delete_message'),
+    path('delete-car-image/<int:image_id>/', views.delete_car_image, name='delete_car_image'),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center mb-0">Edit Car</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {% if field.name == 'images' %}
+                            <input type="file" name="images" class="form-control" multiple>
+                            {% else %}
+                            {{ field }}
+                            {% endif %}
+                            {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% if field.errors %}
+                            <div class="alert alert-danger mt-1">
+                                {{ field.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+
+                        {% if car.images.all %}
+                        <div class="mb-3">
+                            <label class="form-label">Current Images</label>
+                            <div class="row">
+                                {% for image in car.images.all %}
+                                <div class="col-md-4 mb-3">
+                                    <img src="{{ image.image.url }}" alt="Car Image" class="img-thumbnail" style="height: 150px; object-fit: cover;">
+                                    <form method="post" action="{% url 'delete_car_image' image.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm mt-2">Delete</button>
+                                    </form>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Update Car</button>
+                            <a href="{% url 'manage_cars' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        margin-bottom: 1rem;
+    }
+    .alert {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .card {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .btn {
+        margin: 0 0.25rem;
+    }
+</style>
+{% endblock %}

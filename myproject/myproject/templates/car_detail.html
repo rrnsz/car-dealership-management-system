@@ -64,13 +64,55 @@
             width: 100%;
             border-radius: 20px;
             overflow: hidden;
+            margin-bottom: 2rem;
+            touch-action: none; /* Disable browser touch handling */
+            -webkit-user-select: none; /* Prevent text selection */
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         .car-image {
             width: 100%;
-            height: 800px;
+            height: 600px;
             object-fit: cover;
             border-radius: 20px;
+            transition: transform 0.3s ease-out;
+            pointer-events: none; /* Prevent image drag */
+            -webkit-user-drag: none;
+        }
+
+        .thumbnails-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            overflow-x: auto;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .thumbnail.active {
+            opacity: 1;
+            border-color: var(--accent-color);
+        }
+
+        .thumbnail:hover {
+            opacity: 1;
         }
 
         .arrow-btn {
@@ -88,7 +130,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            z-index: 10;
         }
 
         .arrow-btn:hover {
@@ -105,14 +148,24 @@
 
         .image-counter {
             position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 20px;
+            right: 20px;
             background: rgba(0, 0, 0, 0.5);
             color: white;
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 14px;
+        }
+
+        .no-image-placeholder {
+            width: 100%;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            color: #adb5bd;
+            border-radius: 20px;
         }
 
         .car-info-grid {
@@ -434,7 +487,32 @@
     <div class="car-detail-container">
         <!-- Car Image Section -->
         <div class="car-image-container">
-            <img src="{{ car.image.url }}" alt="{{ car.make }} {{ car.model }}" class="car-image">
+            {% if car.images.all %}
+                <img id="mainCarImage" src="{{ car.images.first.image.url }}" alt="{{ car.make }} {{ car.model }}" class="car-image">
+                <button class="arrow-btn prev-btn" onclick="previousImage()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="arrow-btn next-btn" onclick="nextImage()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <!-- Thumbnails -->
+                <div class="thumbnails-container">
+                    {% for image in car.images.all %}
+                        <img src="{{ image.image.url }}" 
+                             alt="Thumbnail {{ forloop.counter }}" 
+                             class="thumbnail {% if forloop.first %}active{% endif %}"
+                             onclick="showImage({{ forloop.counter0 }})">
+                    {% endfor %}
+                </div>
+                <!-- Image counter -->
+                <div class="image-counter">
+                    <span id="currentImageIndex">1</span>/<span>{{ car.images.count }}</span>
+                </div>
+            {% else %}
+                <div class="no-image-placeholder">
+                    <i class="fas fa-car fa-4x"></i>
+                </div>
+            {% endif %}
         </div>
 
         <!-- Car Information Grid -->
@@ -519,8 +597,8 @@
                             <i class="fas fa-gas-pump"></i>
                         </div>
                         <div>
-                            <small>Gas Tank</small>
-                            <div>{{ car.gas }} L</div>
+                            <small>Gas Type</small>
+                            <div>{{ car.gas }} Octane</div>
                         </div>
                     </div>
                 </div>
@@ -608,6 +686,98 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        let currentImageIndex = 0;
+        const images = [
+            {% for image in car.images.all %}
+                "{{ image.image.url }}"{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        // Initialize touch variables
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        let isSwiping = false;
+
+        function showImage(index) {
+            if (index < 0) index = images.length - 1;
+            if (index >= images.length) index = 0;
+            
+            currentImageIndex = index;
+            const mainImage = document.getElementById('mainCarImage');
+            mainImage.src = images[index];
+            
+            // Update thumbnails
+            document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
+                thumb.classList.toggle('active', i === index);
+            });
+            
+            // Update counter
+            document.getElementById('currentImageIndex').textContent = index + 1;
+        }
+
+        function nextImage() {
+            showImage(currentImageIndex + 1);
+        }
+
+        function previousImage() {
+            showImage(currentImageIndex - 1);
+        }
+
+        // Enhanced touch handling
+        const imageContainer = document.querySelector('.car-image-container');
+        
+        imageContainer.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            isSwiping = true;
+            e.preventDefault(); // Prevent default touch behavior
+        }, { passive: false });
+
+        imageContainer.addEventListener('touchmove', function(e) {
+            if (!isSwiping) return;
+            
+            touchEndX = e.touches[0].clientX;
+            touchEndY = e.touches[0].clientY;
+            
+            // Calculate vertical scroll
+            const verticalScroll = Math.abs(touchEndY - touchStartY);
+            
+            // If scrolling more vertical than horizontal, stop swipe
+            if (verticalScroll > Math.abs(touchEndX - touchStartX)) {
+                isSwiping = false;
+            } else {
+                e.preventDefault(); // Prevent scrolling when swiping horizontally
+            }
+        }, { passive: false });
+
+        imageContainer.addEventListener('touchend', function(e) {
+            if (!isSwiping) return;
+            
+            const swipeDistance = touchEndX - touchStartX;
+            const minSwipeDistance = 50;
+            
+            if (Math.abs(swipeDistance) >= minSwipeDistance) {
+                if (swipeDistance > 0) {
+                    previousImage();
+                } else {
+                    nextImage();
+                }
+            }
+            
+            isSwiping = false;
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') previousImage();
+            if (e.key === 'ArrowRight') nextImage();
+        });
+
+        // Initialize the first image
+        showImage(0);
+
         function openPurchaseModal() {
             document.getElementById('purchaseModal').classList.add('show');
             document.body.style.overflow = 'hidden';
