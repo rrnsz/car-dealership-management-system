@@ -108,7 +108,7 @@ def logout_view(request):
 
 # Admin Dashboard Views ------------------------------------------------------------------------------------------
 def admin_dashboard(request):
-    total_cars = Car.objects.aggregate(total_stock=Sum('stock'))['total_stock'] or 0
+    total_cars = Car.objects.count()  # Changed from Sum('stock') to count()
     total_staff = Staff.objects.count()
     total_drivers = Driver.objects.count()
 
