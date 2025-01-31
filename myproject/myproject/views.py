@@ -259,7 +259,7 @@ def delete_driver(request, driver_id):
 
 # Staff ------------------------------------------------------------------------------------------
 def staff_dashboard(request):
-    total_cars = Car.objects.aggregate(total_stock=Sum('stock'))['total_stock'] or 0
+    total_cars = Car.objects.count()  # Count unique car models instead of total stock
     total_orders = Order.objects.count()
     total_drivers = Driver.objects.count()
 
@@ -352,21 +352,37 @@ def edit_car(request, car_id):
     if request.method == "POST":
         form = CarForm(request.POST, request.FILES, instance=car)
         if form.is_valid():
-            car = form.save()
-            images = request.FILES.getlist('images')
-            if images:
-                car.images.all().delete()  # Remove old images
-                for image in images:
-                    CarImage.objects.create(car=car, image=image)
-            messages.success(request, "Car updated successfully!")
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': True})
-            return redirect("manage_cars")
+            try:
+                # Save the car details
+                car = form.save()
+                
+                # Handle new images if they exist
+                new_images = request.FILES.getlist('images')
+                if new_images:
+                    # Delete all existing images
+                    CarImage.objects.filter(car=car).delete()
+                    
+                    # Create new image records
+                    for image in new_images:
+                        CarImage.objects.create(car=car, image=image)
+                
+                messages.success(request, "Car updated successfully!")
+                
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({'status': 'success'})
+                return redirect('manage_cars')
+            
+            except Exception as e:
+                messages.error(request, f"Error updating car: {str(e)}")
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
         else:
+            messages.error(request, "Please correct the errors below.")
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': False, 'errors': form.errors})
+                return JsonResponse({'status': 'error', 'errors': form.errors}, status=400)
     else:
         form = CarForm(instance=car)
+    
     return render(request, "edit_car.html", {"form": form, "car": car})
 
 def update_delivery_status(request, order_id):
@@ -517,46 +533,14 @@ def delete_message(request, message_id):
         messages.success(request, 'Message deleted successfully!')
     return redirect('received_messages')
 
-def add_car(request):
-    if request.method == "POST":
-        form = CarForm(request.POST, request.FILES)
-        if form.is_valid():
-            car = form.save()
-            images = request.FILES.getlist('images')
-            for image in images:
-                CarImage.objects.create(car=car, image=image)
-            messages.success(request, "Car added successfully!")
-            return redirect("manage_cars")
-    else:
-        form = CarForm()
-    return render(request, "add_car.html", {"form": form})
-
-def edit_car(request, car_id):
-    car = get_object_or_404(Car, id=car_id)
-    if request.method == "POST":
-        form = CarForm(request.POST, request.FILES, instance=car)
-        if form.is_valid():
-            car = form.save()
-            images = request.FILES.getlist('images')
-            if images:
-                car.images.all().delete()  # Remove old images
-                for image in images:
-                    CarImage.objects.create(car=car, image=image)
-            messages.success(request, "Car updated successfully!")
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': True})
-            return redirect("manage_cars")
-        else:
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': False, 'errors': form.errors})
-    else:
-        form = CarForm(instance=car)
-    return render(request, "edit_car.html", {"form": form, "car": car})
-
 def delete_car_image(request, image_id):
     image = get_object_or_404(CarImage, id=image_id)
     car_id = image.car.id
     image.delete()
+    
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'status': 'success'})
+    
     messages.success(request, "Image deleted successfully!")
     return redirect('edit_car', car_id=car_id)
 
