@@ -388,8 +388,16 @@ def edit_car(request, car_id):
 def update_delivery_status(request, order_id):
     if request.method == 'POST':
         order = get_object_or_404(Order, id=order_id)
-        order.status = 'delivered'
+        current_status = order.status
+        
+        # Define the status flow
+        if current_status == 'processing':
+            order.status = 'shipped'
+        elif current_status == 'shipped':
+            order.status = 'delivered'
+        
         order.save()
+        messages.success(request, f'Order status updated to {order.status}')
     return redirect('driver_dashboard')
 
 #  ------------------------------------------------------------------------------------------

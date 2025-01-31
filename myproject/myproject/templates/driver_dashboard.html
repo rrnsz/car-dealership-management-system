@@ -96,6 +96,11 @@
             color: #1e40af;
         }
 
+        .status-shipped {
+            background: #caf0f8;
+            color: #0a9396;
+        }
+
         .status-completed {
             background: #dcfce7;
             color: #166534;
@@ -185,14 +190,21 @@
             <div id="active-deliveries">
                 {% if active_deliveries %}
                     {% for delivery in active_deliveries %}
-                    <div class="delivery-card card mb-3">
-                        <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="delivery-card">
+                        <div class="delivery-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Delivery #{{ delivery.id }}</h5>
-                            <span class="badge {% if delivery.status == 'pending' %}bg-warning{% elif delivery.status == 'processing' %}bg-primary{% elif delivery.status == 'shipped' %}bg-info{% else %}bg-success{% endif %}">
+                            <div class="status-badge
+                                {% if delivery.status == 'processing' %}
+                                    status-progress
+                                {% elif delivery.status == 'shipped' %}
+                                    status-shipped
+                                {% elif delivery.status == 'delivered' %}
+                                    status-completed
+                                {% endif %}">
                                 {{ delivery.status|title }}
-                            </span>
+                            </div>
                         </div>
-                        <div class="card-body">
+                        <div class="delivery-body">
                             <div class="row">
                                 <div class="col-md-6">
                                     <p><i class="fas fa-car me-2"></i>{{ delivery.car.make }} {{ delivery.car.model }}</p>
@@ -206,7 +218,12 @@
                                     <form method="post" action="{% url 'update_delivery_status' delivery.id %}">
                                         {% csrf_token %}
                                         <button type="submit" class="btn btn-success w-100">
-                                            <i class="fas fa-check-circle me-2"></i>Mark as Delivered
+                                            <i class="fas fa-check-circle me-2"></i>
+                                            {% if delivery.status == 'processing' %}
+                                                Mark as Shipped
+                                            {% elif delivery.status == 'shipped' %}
+                                                Mark as Delivered
+                                            {% endif %}
                                         </button>
                                     </form>
                                     {% endif %}
@@ -225,12 +242,14 @@
             <div id="completed-deliveries" style="display: none;">
                 {% if completed_deliveries %}
                     {% for delivery in completed_deliveries %}
-                    <div class="delivery-card card mb-3">
-                        <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="delivery-card">
+                        <div class="delivery-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">Delivery #{{ delivery.id }}</h5>
-                            <span class="badge bg-success">Delivered</span>
+                            <div class="status-badge status-completed">
+                                Delivered
+                            </div>
                         </div>
-                        <div class="card-body">
+                        <div class="delivery-body">
                             <p><i class="fas fa-car me-2"></i>{{ delivery.car.make }} {{ delivery.car.model }}</p>
                             <p><i class="fas fa-user me-2"></i>{{ delivery.customer.full_name }}</p>
                             <p><i class="fas fa-map-marker-alt me-2"></i>{{ delivery.address }}</p>
