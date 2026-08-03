@@ -1,0 +1,114 @@
+{% load static %}
+<style>
+    .site-navbar {
+        background-color: #1a1a1a;
+        padding: 0.85rem 0;
+        position: relative;
+        z-index: 1000;
+    }
+    .site-navbar .site-navbar-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+    }
+    .site-navbar .site-navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1.2rem;
+        letter-spacing: 0.5px;
+    }
+    .site-navbar .site-navbar-brand:hover {
+        color: #d4af37;
+    }
+    .site-navbar .site-navbar-brand img {
+        height: 34px;
+        width: auto;
+    }
+    .site-navbar-links {
+        display: flex;
+        align-items: center;
+        gap: 1.75rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .site-navbar-links a {
+        color: rgba(255, 255, 255, 0.85);
+        text-decoration: none;
+        font-size: 0.95rem;
+        white-space: nowrap;
+        transition: color 0.2s ease;
+    }
+    .site-navbar-links a:hover {
+        color: #d4af37;
+    }
+    .site-navbar-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.4rem;
+        cursor: pointer;
+        padding: 0.25rem 0.5rem;
+    }
+    @media (max-width: 768px) {
+        .site-navbar-toggle {
+            display: block;
+        }
+        .site-navbar-links {
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #1a1a1a;
+            padding: 0.25rem 1.5rem 1rem;
+        }
+        .site-navbar-links.open {
+            display: flex;
+        }
+        .site-navbar-links a {
+            width: 100%;
+            padding: 0.7rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    }
+</style>
+
+<nav class="site-navbar">
+    <div class="site-navbar-inner">
+        <a class="site-navbar-brand" href="{% url 'index' %}">
+            <img src="{% static 'img/gearLogo.png' %}" alt="Logo">
+            <span>Luxury Auto Gallery</span>
+        </a>
+        <button type="button" class="site-navbar-toggle" onclick="document.getElementById('siteNavbarLinks').classList.toggle('open')" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <ul class="site-navbar-links" id="siteNavbarLinks">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'vehicles' %}">Vehicles</a></li>
+            <li><a href="{% url 'contact' %}">Contact Us</a></li>
+            {% if user.is_authenticated %}
+                <li>
+                    <a href="{% url 'user_orders' %}">
+                        {% if user.role == 'customer' %}{{ user.customer.full_name }}{% else %}{{ user.email }}{% endif %}
+                    </a>
+                </li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

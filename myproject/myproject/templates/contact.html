@@ -12,27 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}">
-                <span class="brand-text">Luxury Auto Gallery</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'index' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'index' %}#featured">Features</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% include 'partials/navbar.html' %}
 
     <!-- Hero Section -->
     <section class="contact-hero">
@@ -176,20 +156,6 @@
             background: var(--light);
         }
 
-        
-        .navbar {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-        }
-
-        .navbar-brand .brand-text {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: var(--light);
-        }
-
-        
         .contact-hero {
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
                         url('{% static "img/Bugatti.jpeg" %}') center/cover no-repeat;
@@ -457,15 +423,6 @@
     
    
     <script>
-        // Navbar background on scroll
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 50) {
-                document.querySelector('.navbar').style.background = 'rgba(0, 0, 0, 0.9)';
-            } else {
-                document.querySelector('.navbar').style.background = 'rgba(0, 0, 0, 0.8)';
-            }
-        });
-
         // Form submission
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();

@@ -13,25 +13,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .navbar {
-            background-color: #333;
-            padding: 15px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .navbar a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-
         .page-header {
             background: linear-gradient(135deg, #333 0%, #666 100%);
             color: white;
@@ -134,18 +115,7 @@
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <a href="{% url 'index' %}"><i class="fas fa-home"></i> Home</a>
-            <a href="{% url 'vehicles' %}"><i class="fas fa-car"></i> Vehicles</a>
-            <a href="{% url 'contact' %}"><i class="fas fa-envelope"></i> Contact Us</a>
-            {% if user.is_authenticated %}
-            <a href="#"><i class="fas fa-user"></i> {{ full_name }}</a>
-            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
-            {% endif %}
-        </div>
-    </nav>
+    {% include 'partials/navbar.html' %}
 
     <!-- Page Header -->
     <div class="page-header">
