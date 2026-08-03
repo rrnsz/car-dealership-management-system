@@ -1,10 +1,22 @@
 {% load static %}
 <style>
     .site-navbar {
-        background-color: #1a1a1a;
-        padding: 0.85rem 0;
-        position: relative;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
         z-index: 1000;
+        padding: 1.35rem 0;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.15) 80%, transparent 100%);
+        transition: background 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease;
+    }
+    .site-navbar.scrolled {
+        position: fixed;
+        padding: 0.75rem 0;
+        background: rgba(15, 15, 15, 0.82);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
     }
     .site-navbar .site-navbar-inner {
         max-width: 1200px;
@@ -29,26 +41,42 @@
         color: #d4af37;
     }
     .site-navbar .site-navbar-brand img {
-        height: 34px;
+        height: 32px;
         width: auto;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
     }
     .site-navbar-links {
         display: flex;
         align-items: center;
-        gap: 1.75rem;
+        gap: 2rem;
         list-style: none;
         margin: 0;
         padding: 0;
     }
     .site-navbar-links a {
-        color: rgba(255, 255, 255, 0.85);
+        position: relative;
+        color: rgba(255, 255, 255, 0.9);
         text-decoration: none;
         font-size: 0.95rem;
         white-space: nowrap;
+        padding-bottom: 4px;
         transition: color 0.2s ease;
+    }
+    .site-navbar-links a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0;
+        height: 2px;
+        background: #d4af37;
+        transition: width 0.25s ease;
     }
     .site-navbar-links a:hover {
         color: #d4af37;
+    }
+    .site-navbar-links a:hover::after {
+        width: 100%;
     }
     .site-navbar-toggle {
         display: none;
@@ -60,6 +88,11 @@
         padding: 0.25rem 0.5rem;
     }
     @media (max-width: 768px) {
+        .site-navbar {
+            background: rgba(15, 15, 15, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
         .site-navbar-toggle {
             display: block;
         }
@@ -72,7 +105,9 @@
             top: 100%;
             left: 0;
             right: 0;
-            background-color: #1a1a1a;
+            background: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 0.25rem 1.5rem 1rem;
         }
         .site-navbar-links.open {
@@ -86,7 +121,7 @@
     }
 </style>
 
-<nav class="site-navbar">
+<nav class="site-navbar" id="siteNavbar">
     <div class="site-navbar-inner">
         <a class="site-navbar-brand" href="{% url 'index' %}">
             <img src="{% static 'img/gearLogo.png' %}" alt="Logo">
@@ -112,3 +147,18 @@
         </ul>
     </div>
 </nav>
+<script>
+    (function () {
+        var navbar = document.getElementById('siteNavbar');
+        if (!navbar) return;
+        function updateNavbar() {
+            if (window.scrollY > 40) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        }
+        window.addEventListener('scroll', updateNavbar);
+        updateNavbar();
+    })();
+</script>
