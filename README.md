@@ -5,7 +5,7 @@ role-based dashboards for admins, staff, delivery drivers, and customers, with
 vehicle inventory management and an end-to-end order-to-delivery workflow.
 
 ![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)
-![Django](https://img.shields.io/badge/Django-5.1-092E20?logo=django&logoColor=white)
+![Django](https://img.shields.io/badge/Django-4.2-092E20?logo=django&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-database-003B57?logo=sqlite&logoColor=white)
 
 ## Table of contents
@@ -18,21 +18,17 @@ vehicle inventory management and an end-to-end order-to-delivery workflow.
 - [Tech stack](#tech-stack)
 - [Getting started](#getting-started)
 - [Project structure](#project-structure)
+- [Author](#author)
 
 ## Overview
 
 This project simulates the day-to-day operations of a car dealership: browsing
-and purchasing vehicles as a customer, managing inventory as staff, coordinating
-deliveries as a driver, and overseeing the whole operation as an admin — each
-role gets its own dedicated dashboard and permissions.
+vehicles and requesting a callback as a customer, managing inventory and
+confirming orders as staff, coordinating deliveries as a driver, and
+overseeing the whole operation as an admin — each role gets its own dedicated
+dashboard and permissions.
 
 ## Screenshots
-
-<!--
-  Add real screenshots here once available. Recommended shots: homepage/catalog,
-  car detail page, admin dashboard, staff pending-orders view, driver dashboard.
-  Save images under screenshots/ and they'll render automatically below.
--->
 
 | Homepage | Car Detail |
 |---|---|
@@ -52,9 +48,13 @@ role gets its own dedicated dashboard and permissions.
   detail pages.
 - **Staff & driver management** — admins can add, edit, and remove staff and
   delivery drivers.
-- **Order & delivery workflow** — customers place orders; staff confirm and
-  assign a driver + delivery date; drivers update delivery status through the
-  full lifecycle.
+- **Callback-request flow** — instead of an instant checkout, customers
+  request a vehicle and a preferred callback time; a specialist follows up
+  to discuss pricing, financing, and delivery — fitting for high-value
+  inventory.
+- **Order & delivery workflow** — staff confirm the request, enter delivery
+  address and payment method, and assign a driver + delivery date; drivers
+  update delivery status through the full lifecycle.
 - **Contact form** — public inquiries are stored and reviewable by staff.
 - **Django admin** — all models are registered for direct data management.
 
@@ -64,9 +64,9 @@ role gets its own dedicated dashboard and permissions.
 
 ```mermaid
 flowchart LR
-    Customer -->|browses catalog, places order| Order
+    Customer -->|browses catalog, requests callback| Order
     Order -->|reviewed by| Staff
-    Staff -->|assigns driver + delivery date| Driver
+    Staff -->|calls customer, confirms, assigns driver| Driver
     Driver -->|updates delivery status| Order
     Admin -->|manages| Staff
     Admin -->|manages| Driver
@@ -79,7 +79,7 @@ flowchart LR
 ```mermaid
 stateDiagram-v2
     [*] --> pending
-    pending --> processing: staff confirms + assigns driver
+    pending --> processing: staff calls customer, confirms details, assigns driver
     pending --> cancelled: staff cancels
     processing --> shipped: driver updates status
     shipped --> delivered: driver updates status
@@ -109,6 +109,8 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
+`createsuperuser` will also prompt for **Role** — enter `admin` for full access.
+
 Then visit `http://127.0.0.1:8000/` for the site, or `http://127.0.0.1:8000/admin/`
 for the Django admin.
 
@@ -131,8 +133,15 @@ myproject/
     ├── views.py        # role-based views and order/delivery workflow
     ├── forms.py
     ├── admin.py        # Django admin registration
+    ├── backends.py     # custom email-based authentication backend
+    ├── settings.py
     ├── urls.py
     ├── templates/
+    │   └── partials/   # shared navbar, etc.
     ├── static/
     └── migrations/
 ```
+
+## Author
+
+[@rrnsz](https://github.com/rrnsz)
