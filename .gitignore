@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+db.sqlite3
+myproject/media/car_images/
+.DS_Store

@@ -1,8 +1,6 @@
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.db.models.signals import post_migrate
-from django.dispatch import receiver
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from abc import ABC, abstractmethod
 
 
@@ -32,7 +30,7 @@ class UserManager(BaseUserManager, metaclass=SingletonMeta):
         return self.create_user(email, password, **extra_fields)
 
 # Base User Model
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = [
         ("admin", "Admin"),
         ("staff", "Dealership Staff"),
@@ -241,20 +239,6 @@ Order.add_observer(NotificationObserver())
 class CarImage(models.Model):
     car = models.ForeignKey(Car, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='car_images/')
-
-@receiver(post_migrate)
-def create_default_admin(sender, **kwargs):
-    if sender.name == 'myproject': 
-        User = kwargs['app_config'].get_model('User')
-        Admin = kwargs['app_config'].get_model('Admin')
-        if not User.objects.filter(email='admin@example.com').exists():
-            admin_user = User.objects.create_user(
-                email='admin@example.com',
-                password='0000',
-                role='admin',
-                is_staff=True
-            )
-            Admin.objects.create(user=admin_user, full_name='Admin')
 
 class ContactMessage(models.Model):
     name = models.CharField(max_length=100)
