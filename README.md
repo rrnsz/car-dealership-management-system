@@ -144,8 +144,8 @@ myproject/
 
 ## Author
 
-**Your Name Here**
+**MohammadNour**
 
 [![GitHub](https://img.shields.io/badge/GitHub-rrnsz-181717?logo=github&logoColor=white)](https://github.com/rrnsz)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?logo=linkedin&logoColor=white)](https://linkedin.com/in/YOUR-LINKEDIN-HANDLE)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?logo=linkedin&logoColor=white)](https://linkedin.com/in/alkadi-mohamadnour-ab1a50257)
 [![Portfolio](https://img.shields.io/badge/Portfolio-Visit-000000?logo=googlechrome&logoColor=white)](https://YOUR-PORTFOLIO-URL)
