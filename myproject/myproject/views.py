@@ -17,10 +17,9 @@ def create_order(request, car_id):
     if request.method == 'POST':
         try:
             Order.objects.create(
-                customer=request.user.customer, 
+                customer=request.user.customer,
                 car=car,
-                address=request.POST.get('address'),
-                payment_method=request.POST.get('paymentMethod'),
+                preferred_contact_time=request.POST.get('preferredTime', ''),
                 status='pending'
             )
             
@@ -294,11 +293,13 @@ def pending_orders(request):
             
             staff = request.user.staff
             driver = Driver.objects.get(user_id=driver_id)
-            
+
             # Update order details
             order.staff = staff
             order.driver = driver
             order.delivery_date = delivery_date
+            order.address = request.POST.get('address', '')
+            order.payment_method = request.POST.get('payment_method', '')
             order.status = 'processing'
             order.save()
             

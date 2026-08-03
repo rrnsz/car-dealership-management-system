@@ -178,9 +178,8 @@
                             <th>Order ID</th>
                             <th>Order Date</th>
                             <th>Customer Info</th>
-                            <th>Payment & Delivery</th>
                             <th>Car Details</th>
-                            <th>Assignment</th>
+                            <th>Confirm & Arrange Delivery</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -192,13 +191,10 @@
                                 <div class="customer-name">{{ order.customer.full_name }}</div>
                                 <small class="text-muted">
                                     <i class="fas fa-envelope mr-1"></i>{{ order.customer.user.email }}<br>
-                                    <i class="fas fa-phone mr-1"></i>{{ order.customer.phone_number }}
-                                </small>
-                            </td>
-                            <td>
-                                <div><i class="fas fa-credit-card mr-1"></i>{{ order.payment_method }}</div>
-                                <small class="text-muted">
-                                    <i class="fas fa-map-marker-alt mr-1"></i>{{ order.address }}
+                                    <i class="fas fa-phone mr-1"></i>{{ order.customer.phone_number }}<br>
+                                    {% if order.preferred_contact_time %}
+                                    <i class="fas fa-clock mr-1"></i>Best time to call: {{ order.preferred_contact_time }}
+                                    {% endif %}
                                 </small>
                             </td>
                             <td>
@@ -210,6 +206,20 @@
                                 <form method="POST" action="{% url 'pending_orders' %}" class="assignment-form">
                                     {% csrf_token %}
                                     <input type="hidden" name="order_id" value="{{ order.id }}">
+                                    <p class="text-muted mb-2"><small>Fill in after calling the customer:</small></p>
+                                    <div class="form-group mb-2">
+                                        <input type="text" class="form-control" name="address"
+                                               placeholder="Delivery address" required>
+                                    </div>
+                                    <div class="form-group mb-2">
+                                        <select class="form-select" name="payment_method" required>
+                                            <option value="" disabled selected>Payment method</option>
+                                            <option value="credit">Credit Card</option>
+                                            <option value="paypal">PayPal</option>
+                                            <option value="wire_transfer">Wire Transfer</option>
+                                            <option value="financing">Financing</option>
+                                        </select>
+                                    </div>
                                     <div class="form-group mb-2">
                                         <select class="form-select" name="driver" required>
                                             <option value="">Select Driver</option>

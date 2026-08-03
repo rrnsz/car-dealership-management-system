@@ -180,8 +180,9 @@ class Order(models.Model):
     order_date = models.DateTimeField(auto_now_add=True)
     delivery_date = models.DateTimeField(null=True, blank=True) 
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending')  
-    address = models.CharField(max_length=255)  
-    payment_method = models.CharField(max_length=50)
+    address = models.CharField(max_length=255, blank=True, default='')
+    payment_method = models.CharField(max_length=50, blank=True, default='')
+    preferred_contact_time = models.CharField(max_length=20, blank=True, default='')
 
     _observers = []
     

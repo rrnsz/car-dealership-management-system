@@ -205,7 +205,8 @@
 
                                 <div class="detail-row">
                                     <i class="fas fa-map-marker-alt"></i>
-                                    <strong>Delivery Address:</strong> &nbsp; {{ order.address }}
+                                    <strong>Delivery Address:</strong> &nbsp;
+                                    {% if order.address %}{{ order.address }}{% else %}To be arranged{% endif %}
                                 </div>
 
                                 {% if order.driver %}
@@ -287,7 +288,8 @@
 
                                     <div class="detail-row">
                                         <i class="fas fa-map-marker-alt"></i>
-                                        <strong>Delivery Address:</strong> &nbsp; {{ order.address }}
+                                        <strong>Delivery Address:</strong> &nbsp;
+                                    {% if order.address %}{{ order.address }}{% else %}To be arranged{% endif %}
                                     </div>
 
                                     {% if order.driver %}

@@ -606,59 +606,54 @@
                 <!-- Purchase Button -->
                 {% if request.user.is_authenticated %}
                     <button type="button" class="btn btn-primary w-100" onclick="openPurchaseModal()">
-                        <i class="fas fa-shopping-cart me-2"></i>Purchase Now
+                        <i class="fas fa-phone-alt me-2"></i>Request This Vehicle
                     </button>
 
-                    <!-- Purchase Modal -->
+                    <!-- Request Modal -->
                     <div id="purchaseModal" class="modal">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5>Purchase {{ car.make }} {{ car.model }}</h5>
+                                <h5>Request {{ car.make }} {{ car.model }}</h5>
                                 <button type="button" class="modal-close" onclick="closePurchaseModal()">&times;</button>
                             </div>
                             <form method="POST" action="{% url 'create_order' car.id %}" class="contact-form">
                                 {% csrf_token %}
+                                <p class="text-muted">
+                                    Submit your details and a specialist will call you to discuss
+                                    pricing, financing, and delivery for this vehicle.
+                                </p>
                                 <div class="form-sections">
                                     <div class="form-section">
-                                        <h6>Personal Information</h6>
+                                        <h6>Contact Information</h6>
                                         <div class="form-group">
                                             <label>Full Name</label>
-                                            <input type="text" class="form-control" name="fullName" 
+                                            <input type="text" class="form-control" name="fullName"
                                                    value="{{ request.user.customer.full_name }}" readonly>
                                         </div>
                                         <div class="form-group">
                                             <label>Email</label>
-                                            <input type="email" class="form-control" name="email" 
+                                            <input type="email" class="form-control" name="email"
                                                    value="{{ request.user.email }}" readonly>
                                         </div>
                                         <div class="form-group">
                                             <label>Phone Number</label>
-                                            <input type="text" class="form-control" name="phone" 
+                                            <input type="text" class="form-control" name="phone"
                                                    value="{{ request.user.customer.phone_number }}" readonly>
                                         </div>
-                                    </div>
-                                    
-                                    <div class="form-section">
-                                        <h6>Delivery Details</h6>
                                         <div class="form-group">
-                                            <label>Delivery Address</label>
-                                            <input type="text" class="form-control" name="address" required 
-                                                   placeholder="Enter your delivery address">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Payment Method</label>
-                                            <select class="form-control" name="paymentMethod" required>
-                                                <option value="" disabled selected>Select Payment Method</option>
-                                                <option value="credit">Credit Card</option>
-                                                <option value="paypal">PayPal</option>
+                                            <label>Best Time to Call</label>
+                                            <select class="form-control" name="preferredTime">
+                                                <option value="Morning">Morning</option>
+                                                <option value="Afternoon">Afternoon</option>
+                                                <option value="Evening">Evening</option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-footer">
                                     <button type="button" class="cancel-btn" onclick="closePurchaseModal()">Cancel</button>
-                                    <button type="submit" class="confirm-btn">Confirm Purchase</button>
+                                    <button type="submit" class="confirm-btn">Request Callback</button>
                                 </div>
                             </form>
                         </div>
@@ -669,15 +664,15 @@
                         <div class="modal-content success-content">
                             <div class="success-message">
                                 <i class="fas fa-check-circle success-icon"></i>
-                                <h3>Thank You for Your Purchase!</h3>
-                                <p>We will contact you soon with further details.</p>
+                                <h3>Request Received!</h3>
+                                <p>A specialist will call you shortly to discuss the {{ car.make }} {{ car.model }}.</p>
                                 <button class="ok-btn" onclick="closeSuccessModal()">OK</button>
                             </div>
                         </div>
                     </div>
                 {% else %}
                     <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary w-100">
-                        <i class="fas fa-shopping-cart me-2"></i>Purchase Now
+                        <i class="fas fa-phone-alt me-2"></i>Request This Vehicle
                     </a>
                 {% endif %}
             </div>
